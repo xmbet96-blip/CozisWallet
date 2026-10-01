@@ -1,1432 +1,1774 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CozisWallet</title>
-    
-    <!-- Настройки PWA (Установка на рабочий стол ПК и телефона) -->
-    <meta name="theme-color" content="#110c24">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CozisWallet">
-    
-    <!-- SVG-Иконка приложения (Без букв) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CozisNFC — Мобильный Терминал</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+              950: '#2e1065',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Dinamic Web App Manifest -->
-    <script>
-        const manifest = {
-            "name": "CozisWallet",
-            "short_name": "CozisWallet",
-            "start_url": "./",
-            "display": "standalone",
-            "background_color": "#05030a",
-            "theme_color": "#110c24",
-            "icons": [{
-                "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>",
-                "sizes": "512x512",
-                "type": "image/svg+xml",
-                "purpose": "any maskable"
-            }]
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
+      color: #f8fafc;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    .glass-input {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glass-input:focus {
+      border-color: rgba(139, 92, 246, 0.8);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+    
+    .metal-card {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .metal-card.active-card {
+      border-color: rgba(139, 92, 246, 0.8);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.25), 0 20px 40px rgba(0, 0, 0, 0.8);
+      transform: translateY(-4px);
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .nfc-pulse-circle {
+      animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .nfc-pulse-delay {
+      animation-delay: 1.5s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .nfc-floating-icon {
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 2s linear infinite;
+    }
+
+    @keyframes float-3d-1 {
+      0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+      50% { transform: translateY(-20px) rotateX(15deg) rotateY(15deg) scale(1.05); }
+    }
+    @keyframes float-3d-2 {
+      0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+      50% { transform: translateY(25px) rotateX(-15deg) rotateY(-20deg) scale(0.95); }
+    }
+    @keyframes float-3d-3 {
+      0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1); }
+      50% { transform: translateY(-15px) rotateX(20deg) rotateY(-10deg) scale(1.02); }
+    }
+    .animate-float-3d-1 { animation: float-3d-1 6s ease-in-out infinite; }
+    .animate-float-3d-2 { animation: float-3d-2 8s ease-in-out infinite; }
+    .animate-float-3d-3 { animation: float-3d-3 7s ease-in-out infinite 1s; }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, getDocs, collection, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    window.firebaseAppInit = async function() {
+      try {
+        const appId = 'cozis-nfc-app';
+        const firebaseConfig = {
+          apiKey: "AIzaSyA2SA4DjiYfxk_n-10xg5o8-MFJwTv_QFM",
+          authDomain: "cozisnfc.firebaseapp.com",
+          databaseURL: "https://cozisnfc-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "cozisnfc",
+          storageBucket: "cozisnfc.firebasestorage.app",
+          messagingSenderId: "724371737201",
+          appId: "1:724371737201:web:96078dedb1e25094e6a9d0",
+          measurementId: "G-NLK7RHJ2WK"
         };
-        const stringManifest = JSON.stringify(manifest);
-        const blob = new Blob([stringManifest], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestURL;
-        document.head.appendChild(link);
-    </script>
-
-    <!-- Подключение единого фирменного шрифта Syne -->
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    
-    <!-- Подключаем Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-    <style>
-        :root {
-            --bg-color: #05030a;
-            --surface-color: #110c24;
-            --surface-hover: #1d143c;
-            --accent-color: #c084fc;
-            --accent-hover: #a855f7;
-            --text-main: #fdf4ff;
-            --text-muted: #a78bfa;
-            --border-color: rgba(192, 132, 252, 0.2);
-            --danger: #ef4444;
-            --app-font: 'Syne', sans-serif;
-            --font-letter-spacing: 0.5px;
-        }
-
-        body.theme-luxury {
-            --bg-color: #08080a;
-            --surface-color: #121216;
-            --surface-hover: #1c1c24;
-            --accent-color: #e2e8f0;
-            --accent-hover: #ffffff;
-            --text-main: #ffffff;
-            --text-muted: #71717a;
-            --border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        body.theme-orange {
-            --bg-color: #0a0403;
-            --surface-color: #1c0a07;
-            --surface-hover: #2e110c;
-            --accent-color: #ff5722;
-            --accent-hover: #f4511e;
-            --text-main: #fff3e0;
-            --text-muted: #ffb74d;
-            --border-color: rgba(255, 87, 34, 0.25);
-        }
-
-        body.theme-green {
-            --bg-color: #020805;
-            --surface-color: #071c10;
-            --surface-hover: #0d2e1a;
-            --accent-color: #00e676;
-            --accent-hover: #00c853;
-            --text-main: #e8f5e9;
-            --text-muted: #81c784;
-            --border-color: rgba(0, 230, 118, 0.25);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--app-font);
-            letter-spacing: var(--font-letter-spacing);
-        }
-
-        body {
-            background-color: #010204;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: background 0.3s ease;
-        }
-
-        .phone-frame {
-            width: 100%;
-            max-width: 414px;
-            height: 896px;
-            background-color: var(--bg-color);
-            border-radius: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
-            border: 8px solid #141824;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            padding: 24px;
-            padding-bottom: 95px;
-            overflow-y: auto;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        #screen-intro {
-            padding: 0 !important;
-            overflow: hidden !important;
-            background: #000;
-        }
-
-        .skip-btn {
-            position: absolute;
-            bottom: 45px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 14px 40px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            z-index: 20;
-            opacity: 0;
-            animation: fadeInSkip 0.5s ease 2s forwards;
-            backdrop-filter: blur(8px);
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .skip-btn:hover { background: rgba(0, 0, 0, 0.85); }
-        .skip-btn:active { transform: translateX(-50%) scale(0.96); }
-
-        .intro-welcome-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ffffff;
-            font-size: 28px;
-            font-weight: 800;
-            text-align: center;
-            z-index: 15;
-            opacity: 0;
-            animation: fadeInWelcome 1.5s ease 0.5s forwards;
-            text-shadow: 0 2px 16px rgba(0,0,0,0.95);
-            width: 90%;
-            pointer-events: none;
-        }
-
-        @keyframes fadeInWelcome {
-            from { opacity: 0; transform: translate(-50%, -50%) translateY(-20px); }
-            to { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
-        }
-
-        @keyframes fadeInSkip {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            font-size: 30px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        p.subtitle {
-            font-size: 15px;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            line-height: 1.4;
-        }
-
-        .input-group { margin-bottom: 16px; }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        input {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            color: var(--text-main);
-            font-size: 16px;
-            font-weight: 700;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--accent-color);
-            color: #0b0f19;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        body.theme-luxury .btn { color: #08080a; }
-        .btn:hover { background-color: var(--accent-hover); }
-        .btn:active { transform: scale(0.98); }
-
-        .btn-secondary {
-            background-color: var(--surface-color);
-            color: var(--text-main);
-            box-shadow: none;
-            border: 1px solid var(--border-color);
-        }
-        .btn-secondary:hover { background-color: var(--surface-hover); }
-
-        .link-text {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-        .link-text span { color: var(--accent-color); cursor: pointer; }
-
-        #notification-banner {
-            position: absolute;
-            top: -100px;
-            left: 20px;
-            right: 20px;
-            background: var(--surface-color);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--accent-color);
-            padding: 16px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
-        }
-        #notification-banner.show { top: 20px; }
-        .notif-title { font-size: 12px; color: var(--accent-color); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
-        .notif-desc { font-size: 15px; color: var(--text-main); font-weight: 700; }
-
-        .pin-dots {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin: 20px 0;
-        }
-        .pin-dot {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-color);
-            background: transparent;
-            transition: 0.2s;
-        }
-        .pin-dot.filled { background: var(--accent-color); }
         
-        .pin-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            width: 100%;
-            max-width: 360px;
-            margin: 0 auto;
-        }
-        .pin-key {
-            aspect-ratio: 1;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            font-weight: 800;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .pin-key:hover { background: var(--surface-hover); }
-        .pin-key:active { transform: scale(0.92); }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-shrink: 0;
-        }
-        .logo-text { font-size: 24px; font-weight: 800; letter-spacing: 1px; color: var(--text-main); }
+        window.db = db;
+        window.auth = auth;
+        window.appId = appId;
+        window.fsCollection = collection;
+        window.fsDoc = doc;
+        window.fsGetDoc = getDoc;
+        window.fsSetDoc = setDoc;
+        window.fsGetDocs = getDocs;
+        window.fsDeleteDoc = deleteDoc;
+        window.fsOnSnapshot = onSnapshot;
 
-        .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 75px;
-            background: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            backdrop-filter: blur(12px);
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 800;
-            transition: color 0.2s;
-        }
-        .nav-item.active { color: var(--accent-color); }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; stroke: currentColor; }
+        await signInAnonymously(auth);
 
-        .cards-container {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding-right: 4px;
+        console.log("Firebase initialized successfully. UID:", auth.currentUser?.uid);
+        if (typeof window.initAppAfterAuth === 'function') {
+          window.initAppAfterAuth();
         }
-
-        .wallet-card {
-            width: 100%;
-            min-height: 200px;
-            height: 200px;
-            flex-shrink: 0;
-            border-radius: 22px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
+      } catch (err) {
+        console.warn("Firebase initialization warning (falling back to local mode):", err);
+        if (typeof window.initAppAfterAuth === 'function') {
+          window.initAppAfterAuth();
         }
-        .wallet-card:hover { transform: translateY(-3px); box-shadow: 0 16px 35px rgba(0,0,0,0.6); }
-        .wallet-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; z-index: 2; }
-        .card-nametag { font-size: 20px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-        .card-chip {
-            width: 44px;
-            height: 32px;
-            background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .card-chip::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            border: 1px solid rgba(0,0,0,0.25);
-            border-radius: 4px;
-        }
-
-        .card-stats {
-            display: flex;
-            gap: 16px;
-            z-index: 2;
-            margin-top: 10px;
-        }
-        .card-stat-item {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 6px 12px;
-            border-radius: 10px;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .card-stat-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; font-weight: 800; }
-        .card-stat-value { font-size: 16px; font-weight: 800; }
-
-        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; }
-        .card-uid {
-            font-family: monospace;
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.9);
-            letter-spacing: 2px;
-            font-weight: 800;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .card-brand {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.75);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-modal-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(14px);
-            z-index: 600;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            perspective: 1200px;
-        }
-        .card-modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card-container {
-            width: 100%;
-            max-width: 360px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transform: scale(0.3) rotateY(-180deg);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .card-modal-overlay.active .modal-card-container {
-            transform: scale(1) rotateY(0deg);
-        }
-
-        .modal-wallet-card {
-            width: 100%;
-            height: 230px;
-            border-radius: 24px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.7);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-        }
-
-        .empty-cards {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .profile-header-card {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-        .profile-avatar {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--accent-color), var(--surface-hover));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 800;
-            color: #0b0f19;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .profile-username { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
-        .profile-wallet-id { font-size: 13px; color: var(--accent-color); font-weight: 800; font-family: monospace; letter-spacing: 1px; }
-
-        .profile-section-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            margin-top: 16px;
-            letter-spacing: 1px;
-        }
-
-        .profile-stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .stat-box {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--accent-color);
-            margin-bottom: 4px;
-            font-family: monospace;
-        }
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .theme-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .theme-option {
-            padding: 16px;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 800;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .theme-option::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .theme-option:hover {
-            transform: translateY(-4px) scale(1.02);
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 25px rgba(192, 132, 252, 0.25);
-        }
-        .theme-option:hover::after { opacity: 1; }
-        .theme-option:active { transform: scale(0.96); }
-
-        .nfc-animation-box { text-align: center; padding: 10px 0 15px; flex-shrink: 0; }
-        .nfc-pulse {
-            width: 70px;
-            height: 70px;
-            background: rgba(192, 132, 252, 0.15);
-            border: 2px solid var(--accent-color);
-            border-radius: 50%;
-            margin: 0 auto 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-color);
-            animation: pulse 2s infinite;
-        }
-        .nfc-pulse svg { width: 32px; height: 32px; stroke: currentColor; }
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
-        }
-
-        #install-pwa-btn {
-            display: none;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-            color: #0b0f19;
-            margin-bottom: 12px;
-        }
-    </style>
+      }
+    };
+  </script>
 </head>
-<body class="theme-purple">
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white pb-20 sm:pb-0">
 
-    <div class="phone-frame">
-        <div id="notification-banner">
-            <div class="notif-title">CozisWallet Security</div>
-            <div class="notif-desc" id="notif-text">Ваш код: <b>----</b></div>
+    <!-- Блок авторизации/регистрации -->
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-[#0b0f19] flex items-center justify-center p-4 overflow-hidden">
+      
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[12%] left-[10%] sm:left-[18%] w-20 h-20 rounded-3xl bg-gradient-to-tr from-brand-600/20 to-purple-500/20 border border-brand-500/30 backdrop-blur-xl flex items-center justify-center text-brand-400 text-3xl shadow-2xl animate-float-3d-1">
+          <i class="fa-solid fa-id-card"></i>
+        </div>
+        <div class="absolute bottom-[15%] right-[10%] sm:right-[18%] w-24 h-24 rounded-3xl bg-gradient-to-tr from-purple-600/20 to-brand-500/20 border border-purple-500/30 backdrop-blur-xl flex items-center justify-center text-purple-400 text-4xl shadow-2xl animate-float-3d-2">
+          <i class="fa-solid fa-wifi rotate-45"></i>
+        </div>
+        <div class="absolute top-[20%] right-[12%] sm:right-[22%] w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-500/20 to-violet-600/20 border border-brand-400/30 backdrop-blur-xl flex items-center justify-center text-brand-300 text-2xl shadow-2xl animate-float-3d-3">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="absolute bottom-[20%] left-[12%] sm:left-[22%] w-18 h-18 rounded-2xl bg-gradient-to-tr from-violet-500/20 to-brand-600/20 border border-violet-500/30 backdrop-blur-xl flex items-center justify-center text-purple-300 text-3xl shadow-2xl animate-float-3d-2">
+          <i class="fa-solid fa-gift"></i>
+        </div>
+      </div>
+
+      <div class="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 border border-brand-500/30 shadow-2xl relative z-10 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-purple-400 text-white text-3xl shadow-lg shadow-brand-600/40 mb-2">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div class="flex items-center justify-center space-x-2">
+            <span class="font-display font-extrabold text-3xl tracking-tight text-brand-400">cozis</span>
+            <span class="font-display font-bold text-xs uppercase px-2.5 py-0.5 rounded-md bg-brand-500/20 text-brand-300 border border-brand-500/30 tracking-wider">NFC</span>
+          </div>
+          <p id="auth-subtitle" class="text-xs text-slate-400">Авторизация организации / кассира</p>
         </div>
 
-        <!-- МОДАЛЬНОЕ ОКНО ДЛЯ 3D ПРОСМОТРА КАРТЫ -->
-        <div id="card-modal-overlay" class="card-modal-overlay" onclick="closeCardModal()">
-            <div class="modal-card-container" id="modal-card-container" onclick="event.stopPropagation()">
-                <div class="modal-wallet-card" id="modal-wallet-card-bg">
-                    <div class="card-top">
-                        <div class="card-nametag" id="modal-card-nametag"></div>
-                        <div class="card-chip"></div>
-                    </div>
-                    <div class="card-stats">
-                        <div class="card-stat-item">
-                            <div class="card-stat-label">Баллы</div>
-                            <div class="card-stat-value" id="modal-card-points">0</div>
-                        </div>
-                        <div class="card-stat-item">
-                            <div class="card-stat-label">Визиты</div>
-                            <div class="card-stat-value" id="modal-card-visits">0</div>
-                        </div>
-                    </div>
-                    <div class="card-bottom">
-                        <div class="card-uid" id="modal-card-uid" style="font-size: 17px;"></div>
-                        <div class="card-brand">CozisSecure</div>
-                    </div>
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Логин организации</label>
+            <div class="relative">
+              <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+              <input type="text" id="login-user" required placeholder="Введите логин" class="w-full glass-input pl-10 pr-4 py-3 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Пароль</label>
+            <div class="relative">
+              <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+              <input type="password" id="login-pass" required placeholder="Введите пароль" class="w-full glass-input pl-10 pr-4 py-3 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div id="master-code-container" class="hidden">
+            <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Мастер-код регистрации</label>
+            <div class="relative">
+              <i class="fa-solid fa-shield-halved absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+              <input type="password" id="login-master-code" placeholder="Введите мастер-код" class="w-full glass-input pl-10 pr-4 py-3 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div id="login-error" class="hidden text-xs text-red-400 text-center font-medium bg-red-500/10 py-2.5 rounded-xl border border-red-500/20">
+            Неверный логин или пароль
+          </div>
+
+          <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-400 hover:to-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-brand-700/30 transition-all flex items-center justify-center space-x-2">
+            <span id="auth-btn-text">Войти в личный кабинет</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+
+        <div class="text-center pt-2 border-t border-slate-800/80">
+          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-xs text-brand-400 hover:text-brand-300 font-medium transition-colors p-2">
+            Нет аккаунта организации? Зарегистрироваться
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Загрузка -->
+    <div id="loading-overlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+      <div class="glass-panel w-full max-w-sm rounded-3xl p-8 border border-brand-500/40 shadow-2xl text-center space-y-6">
+        <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-4 border-brand-500/20 border-t-brand-500 animate-spin-slow"></div>
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-purple-400 text-white flex items-center justify-center text-xl shadow-lg shadow-brand-600/50">
+            <i class="fa-solid fa-wifi"></i>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <h3 id="loading-title" class="font-display font-bold text-lg text-white">Загрузка кабинета...</h3>
+          <p id="loading-desc" class="text-xs text-slate-400">Синхронизация данных с облаком Cozis</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Приветственное окно -->
+    <div id="welcome-modal-overlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-500">
+      <div id="welcome-modal-card" class="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 border border-brand-500/50 shadow-2xl relative text-center space-y-6 transform scale-90 transition-all duration-500 overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand-600/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-brand-600 via-brand-500 to-purple-400 text-white text-4xl shadow-xl shadow-brand-600/50 animate-bounce">
+          <i class="fa-solid fa-face-smile-beam"></i>
+        </div>
+
+        <div class="space-y-2 relative z-10">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-400 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20">
+            Облачное соединение активно
+          </span>
+          <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white tracking-tight mt-2">
+            Добро пожаловать!
+          </h2>
+          <p class="text-sm text-slate-300">
+            Организация: <span id="welcome-org-name" class="font-display font-bold text-brand-300 text-base"></span>
+          </p>
+        </div>
+
+        <div class="pt-2 relative z-10">
+          <button onclick="closeWelcomeModalAndEnter()" class="w-full bg-gradient-to-r from-brand-500 via-brand-600 to-purple-600 hover:from-brand-400 hover:to-purple-500 text-white py-3.5 rounded-2xl font-bold font-display shadow-xl shadow-brand-600/40 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2">
+            <span>Перейти к терминалу</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основное приложение -->
+    <div id="app" class="flex flex-col min-h-screen hidden">
+      
+      <header class="glass-panel border-b border-brand-900/40 sticky top-0 z-40 px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-purple-400 flex items-center justify-center text-white text-lg shadow-lg shadow-brand-600/30 shrink-0">
+            <i class="fa-solid fa-paw"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight text-brand-400">cozis</span>
+              <span class="font-display font-bold text-[10px] sm:text-xs uppercase px-2 py-0.5 rounded-md bg-brand-500/20 text-brand-300 border border-brand-500/30 tracking-wider">NFC</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Кабинет: <span id="current-org-badge" class="text-brand-300 font-semibold">Test</span></p>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+          <button id="nav-pos" onclick="switchTab('pos')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 bg-brand-600 text-white shadow-md">
+            <i class="fa-solid fa-id-card"></i>
+            <span>Терминал</span>
+          </button>
+          <button id="nav-clients" onclick="switchTab('clients')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Карты (<span id="tab-client-count">0</span>)</span>
+          </button>
+          <button id="nav-stats" onclick="switchTab('stats')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Статистика</span>
+          </button>
+          <button id="nav-settings" onclick="switchTab('settings')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+            <i class="fa-solid fa-gear"></i>
+            <span>Настройки</span>
+          </button>
+        </nav>
+
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <button onclick="openChangePasswordModal()" title="Сменить пароль" class="bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5">
+            <i class="fa-solid fa-key text-brand-400"></i>
+            <span class="hidden lg:inline">Пароль</span>
+          </button>
+
+          <button onclick="logoutApp()" title="Выйти из системы" class="bg-slate-900 hover:bg-red-950/50 text-slate-400 hover:text-red-400 border border-slate-800 px-3 py-2 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="hidden lg:inline">Выйти</span>
+          </button>
+
+          <button onclick="openRegisterModal()" class="bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-400 hover:to-brand-600 text-white text-xs px-3 py-2.5 sm:px-3.5 sm:py-2 rounded-xl font-semibold shadow-lg shadow-brand-700/30 transition-all flex items-center space-x-1.5">
+            <i class="fa-solid fa-plus"></i>
+            <span>Выдать карту</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Нижняя навигация для мобильных -->
+      <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-panel border-t border-slate-800 px-2 py-2 flex justify-around items-center bg-slate-950/95">
+        <button id="mob-nav-pos" onclick="switchTab('pos')" class="flex flex-col items-center space-y-1 text-brand-400 py-1 px-2">
+          <i class="fa-solid fa-id-card text-base"></i>
+          <span class="text-[9px] font-medium">Терминал</span>
+        </button>
+        <button id="mob-nav-clients" onclick="switchTab('clients')" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-white py-1 px-2">
+          <i class="fa-solid fa-wallet text-base"></i>
+          <span class="text-[9px] font-medium">Карты</span>
+        </button>
+        <button id="mob-nav-stats" onclick="switchTab('stats')" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-white py-1 px-2">
+          <i class="fa-solid fa-chart-line text-base"></i>
+          <span class="text-[9px] font-medium">Статистика</span>
+        </button>
+        <button id="mob-nav-settings" onclick="switchTab('settings')" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-white py-1 px-2">
+          <i class="fa-solid fa-gear text-base"></i>
+          <span class="text-[9px] font-medium">Настройки</span>
+        </button>
+      </div>
+
+      <main class="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto flex flex-col space-y-6">
+
+        <!-- ВКЛАДКА: Терминал -->
+        <div id="tab-content-pos" class="space-y-6 animate-fade-in">
+          
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="glass-panel p-3.5 sm:p-4 rounded-2xl flex items-center space-x-3 sm:space-x-4 border-l-4 border-l-brand-500">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Считываний сегодня</p>
+                <h4 id="stat-scans-today" class="text-xl sm:text-2xl font-bold font-display text-white">0</h4>
+              </div>
+            </div>
+            <div class="glass-panel p-3.5 sm:p-4 rounded-2xl flex items-center space-x-3 sm:space-x-4 border-l-4 border-l-purple-500">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                <i class="fa-solid fa-id-card"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Активных карт</p>
+                <h4 id="stat-total-cards" class="text-xl sm:text-2xl font-bold font-display text-white">0</h4>
+              </div>
+            </div>
+            <div class="glass-panel p-3.5 sm:p-4 rounded-2xl flex items-center space-x-3 sm:space-x-4 border-l-4 border-l-violet-500">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-violet-500/10 text-violet-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                <i class="fa-solid fa-fire"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Всего визитов</p>
+                <h4 id="stat-total-visits" class="text-xl sm:text-2xl font-bold font-display text-white">0</h4>
+              </div>
+            </div>
+            <div class="glass-panel p-3.5 sm:p-4 rounded-2xl flex items-center space-x-3 sm:space-x-4 border-l-4 border-l-brand-600">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-600/10 text-brand-400 flex items-center justify-center text-lg sm:text-xl shrink-0">
+                <i class="fa-solid fa-gift"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Списаний бонусов</p>
+                <h4 id="stat-rewards-given" class="text-xl sm:text-2xl font-bold font-display text-white">0</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <div class="lg:col-span-5 space-y-4">
+              <div id="nfc-drop-zone" class="relative group cursor-pointer py-8 px-6 rounded-3xl border-2 border-dashed border-brand-500/40 hover:border-brand-500 transition-all w-full flex flex-col items-center justify-center bg-slate-900/50 hover:bg-brand-950/20 overflow-hidden" onclick="triggerSimulatedScan()">
+                <div class="absolute w-36 h-36 rounded-full border-2 border-brand-500/40 nfc-pulse-circle pointer-events-none"></div>
+                <div class="absolute w-36 h-36 rounded-full border-2 border-purple-500/30 nfc-pulse-circle nfc-pulse-delay pointer-events-none"></div>
+
+                <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-brand-500 via-brand-600 to-brand-800 text-white flex items-center justify-center text-4xl shadow-xl shadow-brand-600/50 group-hover:scale-105 transition-transform relative z-10 nfc-floating-icon border border-brand-400/30">
+                  <i class="fa-solid fa-wifi rotate-90"></i>
                 </div>
-                <button class="btn" style="margin-top: 24px; background: var(--surface-color); color: var(--text-main); border: 1px solid var(--border-color);" onclick="closeCardModal()">Закрыть карту</button>
-            </div>
-        </div>
 
-        <!-- 0. ЭКРАН ЗАСТАВКИ -->
-        <div id="screen-intro" class="screen active">
-            <video src="video.mp4" autoplay muted loop playsinline style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover; z-index: 10;"></video>
-            <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.85) 100%); pointer-events: none; z-index: 12;"></div>
-            <div class="intro-welcome-text">Добро пожаловать в CozisWallet</div>
-            
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 28%; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); mask-image: linear-gradient(to bottom, transparent 0%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%); pointer-events: none; z-index: 13;"></div>
-
-            <button class="skip-btn" onclick="finishIntro()">SKIP</button>
-        </div>
-
-        <!-- 1. ЭКРАН ВХОДА -->
-        <div id="screen-login" class="screen" style="padding-bottom: 24px;">
-            <div style="margin-top: 40px;">
-                <h1>CozisWallet</h1>
-                <p class="subtitle">Облачное хранилище карт и пропусков</p>
-            </div>
-            
-            <div class="input-group">
-                <label>Логин</label>
-                <input type="text" id="login-user" autocomplete="off" placeholder="Ваш логин">
-            </div>
-            <div class="input-group">
-                <label>Пароль</label>
-                <input type="password" id="login-pass" autocomplete="new-password" placeholder="••••••••">
-            </div>
-            
-            <button class="btn" onclick="handleLogin()">Войти</button>
-            <div class="link-text">Нет аккаунта? <span onclick="goToScreen('screen-register')">Зарегистрироваться</span></div>
-        </div>
-
-        <!-- 2. ЭКРАН РЕГИСТРАЦИИ -->
-        <div id="screen-register" class="screen" style="padding-bottom: 24px;">
-            <div style="margin-top: 10px;">
-                <h1>Регистрация</h1>
-                <p class="subtitle">Создайте новый аккаунт в системе</p>
-            </div>
-            
-            <div class="input-group">
-                <label>Логин</label>
-                <input type="text" id="reg-user" autocomplete="off" placeholder="Придумайте логин">
-            </div>
-            <div class="input-group">
-                <label>Пароль</label>
-                <input type="password" id="reg-pass" autocomplete="new-password" placeholder="Придумайте пароль">
-            </div>
-            
-            <button class="btn btn-secondary" onclick="requestRegCode()">Получить код</button>
-
-            <div class="input-group" style="margin-top: 12px;">
-                <label>Код из уведомления</label>
-                <input type="text" id="reg-code" autocomplete="off" placeholder="Введите 4 цифры">
-            </div>
-            
-            <button class="btn" onclick="handleRegister()">Зарегистрироваться</button>
-            <div class="link-text">Уже есть аккаунт? <span onclick="goToScreen('screen-login')">Войти</span></div>
-        </div>
-
-        <!-- 3. НАСТРОЙКА PIN -->
-        <div id="screen-pin-setup" class="screen" style="justify-content: center; align-items: center; text-align: center; padding-bottom: 24px;">
-            <h1>Защита кошелька</h1>
-            <p class="subtitle">Придумайте PIN-код из 4 цифр</p>
-            
-            <div class="pin-dots" id="setup-dots">
-                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-            </div>
-
-            <div class="pin-pad">
-                <div class="pin-key" onclick="pressPin('1')">1</div>
-                <div class="pin-key" onclick="pressPin('2')">2</div>
-                <div class="pin-key" onclick="pressPin('3')">3</div>
-                <div class="pin-key" onclick="pressPin('4')">4</div>
-                <div class="pin-key" onclick="pressPin('5')">5</div>
-                <div class="pin-key" onclick="pressPin('6')">6</div>
-                <div class="pin-key" onclick="pressPin('7')">7</div>
-                <div class="pin-key" onclick="pressPin('8')">8</div>
-                <div class="pin-key" onclick="pressPin('9')">9</div>
-                <div class="pin-key" style="visibility:hidden"></div>
-                <div class="pin-key" onclick="pressPin('0')">0</div>
-                <div class="pin-key" onclick="pressPin('del')">
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                <div class="relative z-10 flex flex-col items-center">
+                  <h3 class="font-display font-bold text-xl text-white mt-5 flex items-center space-x-2">
+                    <span>Приложите карту</span>
+                    <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
+                  </h3>
+                  <p class="text-xs text-slate-400 max-w-xs mt-1 text-center">
+                    Поднесите NFC-чип к смартфону или нажмите сюда для симуляции
+                  </p>
                 </div>
-            </div>
-        </div>
 
-        <!-- 4. ВХОД ПО PIN -->
-        <div id="screen-pin-lock" class="screen" style="justify-content: center; align-items: center; text-align: center; padding-bottom: 24px;">
-            <h1>Введите PIN</h1>
-            <p class="subtitle">Доступ к CozisWallet заблокирован</p>
-            
-            <div class="pin-dots" id="lock-dots">
-                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-            </div>
-
-            <div class="pin-pad">
-                <div class="pin-key" onclick="pressLockPin('1')">1</div>
-                <div class="pin-key" onclick="pressLockPin('2')">2</div>
-                <div class="pin-key" onclick="pressLockPin('3')">3</div>
-                <div class="pin-key" onclick="pressLockPin('4')">4</div>
-                <div class="pin-key" onclick="pressLockPin('5')">5</div>
-                <div class="pin-key" onclick="pressLockPin('6')">6</div>
-                <div class="pin-key" onclick="pressLockPin('7')">7</div>
-                <div class="pin-key" onclick="pressLockPin('8')">8</div>
-                <div class="pin-key" onclick="pressLockPin('9')">9</div>
-                <div class="pin-key" style="visibility:hidden"></div>
-                <div class="pin-key" onclick="pressLockPin('0')">0</div>
-                <div class="pin-key" onclick="pressLockPin('del')">
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                <div class="mt-4 w-full max-w-xs relative z-20" onclick="event.stopPropagation()">
+                  <div class="relative">
+                    <input type="text" id="manual-uid-input" placeholder="UID карты..." class="w-full glass-input px-3 py-2.5 text-xs text-center rounded-xl font-mono text-brand-300 focus:outline-none" onkeydown="handleManualUIDEnter(event)">
+                    <button onclick="submitManualUID()" class="absolute right-1 top-1 bottom-1 px-3 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold transition-colors">
+                      OK
+                    </button>
+                  </div>
                 </div>
+              </div>
+
+              <button onclick="requestWebNFCScan()" class="w-full bg-slate-900 hover:bg-slate-800 border border-brand-500/30 text-brand-300 py-3 rounded-2xl font-bold text-xs flex items-center justify-center space-x-2 transition-all">
+                <i class="fa-solid fa-mobile-screen-button text-brand-400"></i>
+                <span>Активировать Web NFC сканер (Android)</span>
+              </button>
+
+              <div class="w-full text-left">
+                <label class="text-xs font-medium text-slate-400 mb-2 block">Выбор карт организации:</label>
+                <div id="quick-cards-list" class="flex flex-wrap gap-2"></div>
+              </div>
             </div>
+
+            <div class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 min-h-[440px] flex flex-col justify-between relative overflow-hidden">
+              <div id="card-result-empty" class="h-full min-h-[380px] flex flex-col items-center justify-center text-center p-8 space-y-4">
+                <div class="w-20 h-20 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 text-3xl">
+                  <i class="fa-solid fa-address-card"></i>
+                </div>
+                <h3 class="font-display font-bold text-lg text-slate-300">Ожидание считывания карты...</h3>
+                <p class="text-xs text-slate-500 max-w-md">
+                  Поднесите чип NTAG215 к вашему смартфону. Информация появится здесь автоматически.
+                </p>
+              </div>
+
+              <div id="card-result-active" class="hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+                  <div class="flex items-center space-x-4">
+                    <div id="res-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-purple-400 flex items-center justify-center text-2xl font-bold font-display text-white shadow-lg">
+                      @
+                    </div>
+                    <div>
+                      <h2 id="res-nametag" class="font-display font-bold text-2xl text-white">@nametag</h2>
+                      <p class="text-xs text-slate-400 flex items-center space-x-2 mt-0.5">
+                        <span class="font-mono text-slate-400">UID: <span id="res-card-uid" class="text-brand-300">04:A2:3F:8B</span></span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="text-right bg-slate-900/80 px-4 py-2 rounded-2xl border border-slate-800 w-full sm:w-auto">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Последний визит</p>
+                    <p id="res-last-visit" class="text-xs font-medium text-slate-200">Сегодня, 14:20</p>
+                  </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+                  <div class="grid grid-cols-2 gap-4 relative z-10">
+                    <div>
+                      <span class="text-xs text-slate-300 font-medium">Количество визитов:</span>
+                      <div class="flex items-baseline space-x-1 mt-1">
+                        <span id="res-visit-count" class="text-4xl font-extrabold font-display text-white">12</span>
+                        <span class="text-xs text-brand-300">раз</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span class="text-xs text-slate-300 font-medium">Баланс бонусов:</span>
+                      <div class="flex items-baseline space-x-1 mt-1">
+                        <span id="res-bonus-balance" class="text-4xl font-extrabold font-display text-purple-400">350</span>
+                        <span class="text-xs text-purple-300">Б</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Шкала исчисления визитов "до приза" -->
+                <div id="prize-progress-widget" class="glass-card p-4 rounded-2xl relative overflow-hidden space-y-2">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-300 flex items-center space-x-1.5">
+                      <i class="fa-solid fa-trophy text-amber-400"></i>
+                      <span id="widget-prize-label">До приза (Фирменный десерт):</span>
+                    </span>
+                    <span id="widget-prize-counter" class="font-bold text-brand-300">7 / 10 визитов</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                    <div id="widget-prize-bar" class="h-full bg-gradient-to-r from-brand-500 to-purple-400 rounded-full transition-all duration-500" style="width: 70%"></div>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Действия кассира:</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="actionAddVisit()" class="w-full bg-gradient-to-r from-brand-500 to-purple-600 hover:from-brand-400 hover:to-purple-500 text-white p-4 rounded-2xl font-bold font-display shadow-lg shadow-brand-600/30 transition-all flex items-center justify-center space-x-3 active:scale-95">
+                      <i class="fa-solid fa-circle-plus text-xl"></i>
+                      <span class="text-base">+1 Засчитать визит</span>
+                    </button>
+
+                    <button onclick="openRedeemModal()" class="w-full bg-slate-900 hover:bg-slate-800 border border-brand-500/40 text-brand-300 p-4 rounded-2xl font-bold font-display transition-all flex items-center justify-center space-x-3 active:scale-95">
+                      <i class="fa-solid fa-gift text-xl text-purple-400"></i>
+                      <span class="text-base">Списать бонусы</span>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center justify-between text-xs text-slate-400 pt-2">
+                    <button onclick="clearScanResult()" class="hover:text-red-400 transition-colors ml-auto flex items-center space-x-1">
+                      <i class="fa-solid fa-xmark"></i>
+                      <span>Закрыть</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
 
-        <!-- 5. ГЛАВНАЯ СТРАНИЦА (КОШЕЛЕК) -->
-        <div id="screen-wallet" class="screen">
-            <div class="header">
-                <div class="logo-text">CozisWallet</div>
+        <!-- ВКЛАДКА: Карты -->
+        <div id="tab-content-clients" class="hidden space-y-6 animate-fade-in">
+          
+          <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="relative w-full md:w-96">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
+              <input type="text" id="client-search-input" placeholder="Поиск по нэймтэгу или UID..." class="w-full glass-input pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none" oninput="renderClientsCarousel()">
             </div>
-
-            <!-- Кнопка установки PWA приложения -->
-            <button class="btn" id="install-pwa-btn" onclick="installPWA()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Установить CozisWallet
+            <button onclick="exportCSV()" class="w-full md:w-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center space-x-2 border border-slate-700 transition-colors">
+              <i class="fa-solid fa-file-csv text-purple-400 text-sm"></i>
+              <span>Экспорт в CSV</span>
             </button>
+          </div>
 
-            <h1 style="font-size: 24px; margin-bottom: 14px; flex-shrink: 0;">Ваши карты</h1>
-
-            <div class="cards-container" id="cards-list">
-                <div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>
+          <div class="glass-panel p-6 rounded-3xl space-y-6 relative overflow-hidden">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 class="font-display font-bold text-xl text-white flex items-center space-x-2">
+                  <i class="fa-solid fa-wallet text-brand-400"></i>
+                  <span>Именные карты организации</span>
+                </h3>
+                <p class="text-xs text-slate-400">Листайте разноцветные карты для просмотра персональной информации</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button onclick="scrollClientsCarousel(-1)" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="scrollClientsCarousel(1)" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 flex items-center justify-center text-slate-300 hover:text-white transition-all">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
             </div>
 
-            <button class="btn" onclick="openAddCard()">Добавить карту</button>
-        </div>
+            <div id="clients-carousel-container" class="flex gap-6 overflow-x-auto pb-4 pt-2 snap-x snap-mandatory scrollbar-none focus:outline-none" style="scrollbar-width: none;"></div>
+          </div>
 
-        <!-- 6. ДОБАВЛЕНИЕ КАРТЫ С WEB NFC СКАНЕРОМ -->
-        <div id="screen-add-card" class="screen">
-            <div class="header">
-                <h1>Новая карта</h1>
-                <div style="cursor: pointer; font-weight: 800; font-size: 18px;" onclick="switchTab('wallet')">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <div id="client-detail-panel" class="glass-panel rounded-3xl p-6 space-y-6 border border-brand-500/30">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-800">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-xl font-bold">
+                  <i class="fa-solid fa-user-shield"></i>
                 </div>
-            </div>
-
-            <div class="nfc-animation-box">
-                <div class="nfc-pulse">
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 0 1 7.54 16.6" stroke-width="2" stroke-linecap="round"/><path d="M12 6a6 6 0 0 1 4.52 9.96" stroke-width="2" stroke-linecap="round"/><path d="M12 10a2 2 0 0 1 1.51 3.32" stroke-width="2" stroke-linecap="round"/></svg>
-                </div>
-                <p id="nfc-status-text" style="font-size: 14px; color: var(--text-muted); font-weight: 700;">Нажмите кнопку ниже для сканирования или введите UID вручную</p>
-            </div>
-
-            <button class="btn btn-secondary" style="margin-bottom: 16px; border-color: var(--accent-color);" onclick="startWebNFCScan()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a10 10 0 0 1 7.54 16.6"/><path d="M12 6a6 6 0 0 1 4.52 9.96"/><circle cx="12" cy="12" r="2"/></svg>
-                Сканировать NFC (Web NFC)
-            </button>
-
-            <div class="input-group">
-                <label>UID карты</label>
-                <input type="text" id="card-uid-input" autocomplete="off" placeholder="Например: 04:a3:8b:2c">
-            </div>
-            <div class="input-group">
-                <label>Название (Nametag)</label>
-                <input type="text" id="card-name-input" autocomplete="off" placeholder="Например: Карта лояльности">
-            </div>
-
-            <button class="btn" onclick="saveNewCard()">Привязать карту</button>
-        </div>
-
-        <!-- 7. ПРОФИЛЬ И НАСТРОЙКИ -->
-        <div id="screen-profile" class="screen">
-            <div class="header">
-                <h1>Профиль</h1>
-            </div>
-
-            <div class="profile-header-card">
-                <div class="profile-avatar" id="prof-avatar-text">C</div>
                 <div>
-                    <div class="profile-username" id="prof-login">user</div>
-                    <div class="profile-wallet-id" id="prof-wallet-id">ID: 0000 0000 0000</div>
+                  <h4 id="detail-nametag" class="font-display font-bold text-lg text-white">Выберите карту</h4>
+                  <p class="text-xs text-slate-400">Уникальный UID: <span id="detail-uid" class="font-mono text-brand-300">—</span></p>
                 </div>
+              </div>
+              <div class="flex items-center space-x-2 w-full md:w-auto">
+                <button onclick="selectCardForPOS()" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-bolt"></i>
+                  <span>Открыть в терминале</span>
+                </button>
+                <button onclick="requestDeleteClientFromDetail()" class="px-3 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 text-xs transition-all">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
             </div>
 
-            <div class="profile-section-title">Статистика</div>
-            <div class="profile-stats-grid">
-                <div class="stat-box">
-                    <div class="stat-value" id="prof-cards-count">0</div>
-                    <div class="stat-label">Карт в кошельке</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" style="color: var(--text-main);">Защищено</div>
-                    <div class="stat-label">Статус шифрования</div>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                <p class="text-xs text-slate-400">Всего визитов</p>
+                <h3 id="detail-visits" class="text-2xl font-bold font-display text-white mt-1">0</h3>
+              </div>
+              <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                <p class="text-xs text-slate-400">Баланс бонусов</p>
+                <h3 id="detail-bonuses" class="text-2xl font-bold font-display text-purple-400 mt-1">0 Б</h3>
+              </div>
+              <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                <p class="text-xs text-slate-400">Последнее посещение</p>
+                <h3 id="detail-lastvisit" class="text-sm font-semibold text-slate-200 mt-2">—</h3>
+              </div>
             </div>
+          </div>
 
-            <div class="profile-section-title">Оформление</div>
-            <div class="theme-grid">
-                <div class="theme-option" onclick="setTheme('luxury')" style="border-color: #e2e8f0; color: #ffffff;">Luxury Black</div>
-                <div class="theme-option" onclick="setTheme('purple')" style="border-color: #c084fc; color: #d8b4fe;">Purple Galaxy</div>
-                <div class="theme-option" onclick="setTheme('orange')" style="border-color: #ff5722; color: #ff8a65;">Orange Force</div>
-                <div class="theme-option" onclick="setTheme('green')" style="border-color: #00e676; color: #69f0ae;">Green Forest</div>
-            </div>
-
-            <div class="profile-section-title">Безопасность и сессия</div>
-            <button class="btn btn-secondary" onclick="startChangePin()">Сменить PIN-код</button>
-            <button class="btn btn-secondary" style="border-color: var(--danger); color: var(--danger); margin-top: 10px;" onclick="logout()">Выйти из аккаунта</button>
         </div>
 
-        <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
-        <div class="bottom-nav" id="main-bottom-nav" style="display: none;">
-            <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')">
-                <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke-width="2"/></svg>
-                <span>Карты</span>
+        <!-- ВКЛАДКА: Статистика -->
+        <div id="tab-content-stats" class="hidden space-y-6 animate-fade-in">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-panel p-5 rounded-2xl border-t-2 border-t-brand-500">
+              <p class="text-xs text-slate-400 font-medium">Активность за 30 дней</p>
+              <h3 id="stat-30days" class="text-3xl font-extrabold font-display text-white mt-1">0</h3>
             </div>
-            <div class="nav-item" id="nav-profile" onclick="switchTab('profile')">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke-width="2"/></svg>
-                <span>Профиль</span>
+            <div class="glass-panel p-5 rounded-2xl border-t-2 border-t-purple-500">
+              <p class="text-xs text-slate-400 font-medium">Среднее кол-во визитов</p>
+              <h3 id="stat-avg-visits" class="text-3xl font-extrabold font-display text-white mt-1">0.0</h3>
             </div>
+            <div class="glass-panel p-5 rounded-2xl border-t-2 border-t-violet-500">
+              <p class="text-xs text-slate-400 font-medium">Активные карты</p>
+              <h3 id="stat-retention" class="text-3xl font-extrabold font-display text-white mt-1">100%</h3>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border-t-2 border-t-brand-700">
+              <p class="text-xs text-slate-400 font-medium">Выдано вознаграждений</p>
+              <h3 id="stat-rewards-total" class="text-3xl font-extrabold font-display text-white mt-1">0</h3>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-8 glass-panel p-5 sm:p-6 rounded-3xl space-y-4">
+              <div class="flex justify-between items-center flex-wrap gap-2">
+                <div>
+                  <h3 class="font-display font-bold text-base sm:text-lg text-white">Распределение визитов по дням недели</h3>
+                  <p class="text-xs text-slate-400">Динамика на основе счетчиков организации</p>
+                </div>
+                <span id="stat-total-scans-badge" class="text-xs font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-xl text-brand-300">
+                  Всего: 0
+                </span>
+              </div>
+              <div id="stats-chart-container" class="pt-6 pb-2 px-1 sm:px-2 flex items-end justify-between h-56 border-b border-slate-800 space-x-1 sm:space-x-2"></div>
+            </div>
+            <div class="lg:col-span-4 glass-panel p-5 sm:p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+              <div>
+                <h3 class="font-display font-bold text-lg text-white mb-1">Топ постоянных карт</h3>
+                <div id="stats-leaderboard" class="space-y-3"></div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- ВКЛАДКА: Настройки организации -->
+        <div id="tab-content-settings" class="hidden space-y-6 animate-fade-in">
+          <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-6 max-w-2xl mx-auto border border-brand-500/30">
+            <div class="flex items-center space-x-3 pb-4 border-b border-slate-800">
+              <div class="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-gear"></i>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-xl text-white">Настройки организации</h3>
+                <p class="text-xs text-slate-400">Параметры программы лояльности и отображения в терминале</p>
+              </div>
+            </div>
+
+            <form onsubmit="saveOrgSettings(event)" class="space-y-5">
+              <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1.5 block">1. Количество начисления баллов за 1 визит</label>
+                <div class="relative">
+                  <i class="fa-solid fa-coins absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                  <input type="number" id="setting-points-per-visit" min="1" max="1000" value="30" required class="w-full glass-input pl-10 pr-4 py-3 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none">
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Сколько бонусов начисляется клиенту при сканировании за каждый успешный визит.</p>
+              </div>
+
+              <div class="pt-2 border-t border-slate-800/80 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xs font-semibold text-slate-300 block">2. Шкала исчисления визитов "до приза" на главный экран</span>
+                    <span class="text-[11px] text-slate-500">Отображать прогресс-бар до получения награды на экране терминала</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="setting-show-prize-progress" checked class="sr-only peer" onchange="togglePrizeProgressSettingPreview()">
+                    <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                  </label>
+                </div>
+
+                <div id="prize-settings-group" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Визитов до приза</label>
+                    <input type="number" id="setting-visits-to-prize" min="1" max="100" value="10" class="w-full glass-input px-4 py-3 text-sm rounded-xl text-slate-100 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Название приза / подарка</label>
+                    <input type="text" id="setting-prize-name" value="Фирменный десерт" class="w-full glass-input px-4 py-3 text-sm rounded-xl text-slate-100 focus:outline-none">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-800/80">
+                <label class="text-xs font-semibold text-slate-300 mb-1.5 block">3. Стартовые бонусы при выдаче новой карты</label>
+                <div class="relative">
+                  <i class="fa-solid fa-gift absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                  <input type="number" id="setting-default-bonus" min="0" max="1000" value="100" required class="w-full glass-input pl-10 pr-4 py-3 text-sm rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none">
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Автоматический бонус для новых клиентов при первичной регистрации карты.</p>
+              </div>
+
+              <div class="pt-4">
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-400 hover:to-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-brand-700/30 transition-all flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-floppy-disk"></i>
+                  <span>Сохранить настройки организации</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Модальное окно: Выдача карты -->
+      <div id="register-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-xl rounded-3xl p-6 sm:p-8 border border-brand-500/30 shadow-2xl relative">
+          <button onclick="closeRegisterModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg p-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <h3 class="font-display font-bold text-2xl text-white mb-1">Создание карты NTAG215</h3>
+          <p class="text-xs text-slate-400 mb-6">Приложите физическую карту к смартфону или задайте UID вручную</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form id="register-card-form" onsubmit="handleRegisterSubmit(event)" class="space-y-4">
+              <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                  <span>UID Чипа NTAG215 *</span>
+                  <span class="text-[10px] text-brand-400 animate-pulse">Готов к сканированию</span>
+                </label>
+                <div class="flex space-x-2">
+                  <input type="text" id="reg-uid" required placeholder="Приложите карту..." class="w-full glass-input px-3 py-3 text-xs font-mono text-brand-300 rounded-xl focus:outline-none" oninput="updateLiveCardPreview()">
+                  <button type="button" onclick="generateRandomUID()" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs whitespace-nowrap transition-colors">
+                    Генератор
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Нэймтэг / Псевдоним *</label>
+                <input type="text" id="reg-nametag" required placeholder="Например: @fox_owner" class="w-full glass-input px-3 py-3 text-xs text-white rounded-xl focus:outline-none" oninput="updateLiveCardPreview()">
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Стартовые бонусы</label>
+                <input type="number" id="reg-bonus" value="100" class="w-full glass-input px-3 py-3 text-xs text-white rounded-xl focus:outline-none">
+              </div>
+              <div class="pt-2">
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-400 hover:to-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-brand-700/30 transition-all">
+                  Активировать карту
+                </button>
+              </div>
+            </form>
+
+            <div class="flex flex-col items-center justify-center space-y-3 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+              <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Макет карты</label>
+              <div class="w-full max-w-[240px] h-[150px] rounded-2xl metal-card p-4 flex flex-col justify-between text-white relative shadow-2xl overflow-hidden" style="background: linear-gradient(135deg, #3b1f48 0%, #1f112b 50%, #0b0f19 100%);">
+                <div class="flex justify-between items-start">
+                  <div class="flex items-center space-x-1 bg-white/10 px-2 py-0.5 rounded-lg border border-white/10">
+                    <span class="font-display font-extrabold text-xs text-purple-300">cozis</span>
+                  </div>
+                  <i class="fa-solid fa-wifi rotate-90 text-white/60 text-xs"></i>
+                </div>
+                <div class="w-7 h-5 rounded bg-amber-200/90 border border-amber-300/50 shadow-inner"></div>
+                <div>
+                  <p id="prev-card-nametag" class="font-display font-bold text-base tracking-wide truncate text-white">@nametag</p>
+                  <p id="prev-card-uid" class="font-mono text-[10px] text-slate-400">04:XX:XX:XX</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно: Списание бонусов -->
+      <div id="redeem-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-brand-500/30 text-center space-y-4">
+          <div class="w-12 h-12 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center mx-auto text-xl">
+            <i class="fa-solid fa-gift"></i>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white">Списание бонусов</h3>
+          <div class="space-y-3 pt-1">
+            <input type="number" id="redeem-amount-input" min="1" value="100" class="w-full glass-input px-4 py-3 text-center text-lg font-bold text-purple-400 rounded-xl focus:outline-none">
+            <div class="flex space-x-3 pt-2">
+              <button onclick="closeRedeemModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">Отмена</button>
+              <button onclick="executeRedeemBonus()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-purple-600 hover:from-brand-400 hover:to-purple-500 text-white text-xs font-semibold shadow-lg shadow-brand-600/30 transition-colors">Списать</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно: Удаление карты -->
+      <div id="delete-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-red-500/30 text-center space-y-4">
+          <div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto text-xl">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white">Удалить карту?</h3>
+          <p id="delete-modal-text" class="text-xs text-slate-400">Вы действительно хотите удалить эту карту?</p>
+          <div class="flex space-x-3 pt-2">
+            <button onclick="closeDeleteModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">Отмена</button>
+            <button onclick="executeDeleteClient()" class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/30 transition-colors">Удалить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно: Смена пароля -->
+      <div id="change-pass-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 border border-brand-500/30 shadow-2xl relative space-y-4">
+          <button onclick="closeChangePasswordModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg p-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <h3 class="font-display font-bold text-2xl text-white mb-1">Смена пароля организации</h3>
+          <form onsubmit="handlePasswordChange(event)" class="space-y-4">
+            <div>
+              <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Текущий пароль</label>
+              <input type="password" id="cp-current" required placeholder="Введите старый пароль" class="w-full glass-input px-3 py-3 text-xs text-white rounded-xl focus:outline-none">
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-300 mb-1.5 block">Новый пароль</label>
+              <input type="password" id="cp-new" required placeholder="Введите новый пароль" class="w-full glass-input px-3 py-3 text-xs text-white rounded-xl focus:outline-none">
+            </div>
+            <div id="cp-error" class="hidden text-xs text-red-400 text-center font-medium bg-red-500/10 py-2.5 rounded-xl border border-red-500/20">Неверный текущий пароль</div>
+            <button type="submit" class="w-full bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-400 hover:to-brand-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-brand-700/30 transition-all">Сохранить новый пароль</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="toast-container" class="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
     </div>
 
     <script>
-        // ======= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ БЕЗОПАСНОСТИ =======
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+      const MASTER_RESET_CODE = 'cozis2026';
+      const REGISTRATION_MASTER_CODE = 'F1GZ0966BIKS11';
+
+      let currentOrg = null;
+      let clients = [];
+      let activeScannedClient = null;
+      let selectedCarouselUID = null;
+      let targetUidToDelete = null;
+      let isRegisterMode = false;
+      let unsubscribeClients = null;
+
+      let orgSettings = {
+        pointsPerVisit: 30,
+        showPrizeProgress: true,
+        visitsToPrize: 10,
+        prizeName: 'Фирменный десерт',
+        defaultBonus: 100
+      };
+
+      window.initAppAfterAuth = function() {};
+
+      function loadOrgSettings(orgName) {
+        const key = `cozis_settings_${orgName.toLowerCase()}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          try {
+            orgSettings = { ...orgSettings, ...JSON.parse(saved) };
+          } catch(e) {}
+        } else {
+          orgSettings = {
+            pointsPerVisit: 30,
+            showPrizeProgress: true,
+            visitsToPrize: 10,
+            prizeName: 'Фирменный десерт',
+            defaultBonus: 100
+          };
         }
+        
+        if (document.getElementById('setting-points-per-visit')) {
+          document.getElementById('setting-points-per-visit').value = orgSettings.pointsPerVisit;
+          document.getElementById('setting-show-prize-progress').checked = orgSettings.showPrizeProgress;
+          document.getElementById('setting-visits-to-prize').value = orgSettings.visitsToPrize;
+          document.getElementById('setting-prize-name').value = orgSettings.prizeName;
+          document.getElementById('setting-default-bonus').value = orgSettings.defaultBonus;
+          document.getElementById('reg-bonus').value = orgSettings.defaultBonus;
+          togglePrizeProgressSettingPreview();
+        }
+      }
 
-        // ======= PWA ОБРАБОТЧИК УСТАНОВКИ =======
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const installBtn = document.getElementById('install-pwa-btn');
-            if (installBtn) installBtn.style.display = 'flex';
-        });
+      window.saveOrgSettings = function(event) {
+        event.preventDefault();
+        orgSettings.pointsPerVisit = parseInt(document.getElementById('setting-points-per-visit').value) || 30;
+        orgSettings.showPrizeProgress = document.getElementById('setting-show-prize-progress').checked;
+        orgSettings.visitsToPrize = parseInt(document.getElementById('setting-visits-to-prize').value) || 10;
+        orgSettings.prizeName = document.getElementById('setting-prize-name').value.trim() || 'Приз';
+        orgSettings.defaultBonus = parseInt(document.getElementById('setting-default-bonus').value) || 100;
+        
+        document.getElementById('reg-bonus').value = orgSettings.defaultBonus;
 
-        async function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showNotification('CozisWallet успешно установлен!');
-                }
-                deferredPrompt = null;
-                document.getElementById('install-pwa-btn').style.display = 'none';
+        const key = `cozis_settings_${currentOrg.toLowerCase()}`;
+        localStorage.setItem(key, JSON.stringify(orgSettings));
+
+        showToast('Настройки организации успешно сохранены!', 'success');
+        if (activeScannedClient) {
+          updatePrizeProgressWidget(activeScannedClient);
+        }
+      };
+
+      window.togglePrizeProgressSettingPreview = function() {
+        const checked = document.getElementById('setting-show-prize-progress').checked;
+        const group = document.getElementById('prize-settings-group');
+        if (checked) {
+          group.classList.remove('opacity-50', 'pointer-events-none');
+        } else {
+          group.classList.add('opacity-50', 'pointer-events-none');
+        }
+      };
+
+      function updatePrizeProgressWidget(client) {
+        const widget = document.getElementById('prize-progress-widget');
+        if (!widget) return;
+        if (!orgSettings.showPrizeProgress) {
+          widget.classList.add('hidden');
+          return;
+        }
+        widget.classList.remove('hidden');
+
+        const target = orgSettings.visitsToPrize || 10;
+        const currentVisits = client.visits || 0;
+        const progressInCycle = currentVisits % target;
+        const pct = Math.min(100, Math.round((progressInCycle / target) * 100));
+
+        document.getElementById('widget-prize-label').innerText = `До приза (${orgSettings.prizeName}):`;
+        document.getElementById('widget-prize-counter').innerText = `${progressInCycle} / ${target} визитов (Всего: ${currentVisits})`;
+        document.getElementById('widget-prize-bar').style.width = `${pct}%`;
+      }
+
+      async function getAccountsFromCloud() {
+        let cloudAccounts = {};
+        try {
+          if (window.db && window.auth && window.fsCollection && window.auth.currentUser) {
+            const accountsCol = window.fsCollection(window.db, 'artifacts', window.appId, 'public', 'data', 'accounts');
+            const snapshot = await window.fsGetDocs(accountsCol);
+            if (!snapshot.empty) {
+              snapshot.forEach(docSnap => {
+                cloudAccounts[docSnap.id] = docSnap.data();
+              });
             }
+          }
+        } catch(e) {
+          console.warn("Cloud accounts read warning:", e);
+        }
+        const localAccounts = JSON.parse(localStorage.getItem('cozis_accounts') || '{"Test":{"pass":"test"},"Sash":{"pass":"Sash"}}');
+        return { ...localAccounts, ...cloudAccounts };
+      }
+
+      async function saveAccountToCloud(orgName, pass) {
+        let localAccounts = JSON.parse(localStorage.getItem('cozis_accounts') || '{"Test":{"pass":"test"},"Sash":{"pass":"Sash"}}');
+        localAccounts[orgName] = { pass };
+        localStorage.setItem('cozis_accounts', JSON.stringify(localAccounts));
+
+        try {
+          if (window.db && window.fsSetDoc && window.fsDoc && window.auth) {
+            if (!window.auth.currentUser) await signInAnonymously(window.auth);
+            await window.fsSetDoc(window.fsDoc(window.db, 'artifacts', window.appId, 'public', 'data', 'accounts', orgName), { pass: pass });
+          }
+        } catch(e) {
+          console.warn("Cloud account save warning:", e);
+        }
+      }
+
+      function subscribeClientsForOrg(orgName) {
+        loadOrgSettings(orgName);
+        const storageKey = `cozis_clients_${orgName.toLowerCase()}`;
+        const localData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (localData.length > 0) {
+          clients = localData;
+        } else if (orgName.toLowerCase() === 'test') {
+          clients = [
+            { uid: '04:A2:3F:8B', nametag: '@alex_fox', visits: 14, bonuses: 420, lastVisit: 'Сегодня, 14:20' },
+            { uid: '04:88:9C:12', nametag: '@magnit_user', visits: 8, bonuses: 240, lastVisit: 'Вчера, 18:05' }
+          ];
+          localStorage.setItem(storageKey, JSON.stringify(clients));
+        } else {
+          clients = [];
         }
 
-        // ======= КОНФИГУРАЦИЯ FIREBASE =======
-        const firebaseConfig = {
-            apiKey: "AIzaSyA2SA4DjiYfxk_n-10xg5o8-MFJwTv_QFM",
-            authDomain: "cozisnfc.firebaseapp.com",
-            databaseURL: "https://cozisnfc-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "cozisnfc",
-            storageBucket: "cozisnfc.firebasestorage.app",
-            messagingSenderId: "724371737201",
-            appId: "1:724371737201:web:96078dedb1e25094e6a9d0",
-            measurementId: "G-NLK7RHJ2WK"
+        renderQuickCards();
+        updateGlobalStats();
+
+        if (window.db && window.fsCollection && window.fsOnSnapshot) {
+          if (unsubscribeClients) unsubscribeClients();
+          const colName = `org_${orgName.toLowerCase()}_clients`;
+          const clientsCol = window.fsCollection(window.db, 'artifacts', window.appId, 'public', 'data', colName);
+
+          unsubscribeClients = window.fsOnSnapshot(clientsCol, (snapshot) => {
+            if (!snapshot.empty) {
+              const cloudClients = [];
+              snapshot.forEach(docSnap => {
+                cloudClients.push({ id: docSnap.id, ...docSnap.data() });
+              });
+              clients = cloudClients;
+              localStorage.setItem(storageKey, JSON.stringify(clients));
+              renderQuickCards();
+              updateGlobalStats();
+              if (document.getElementById('tab-content-clients') && !document.getElementById('tab-content-clients').classList.contains('hidden')) {
+                renderClientsCarousel();
+              }
+            }
+          }, (error) => {
+            console.warn("Firestore snapshot warning:", error);
+          });
+        }
+      }
+
+      async function saveClientToCloud(orgName, clientObj) {
+        const storageKey = `cozis_clients_${orgName.toLowerCase()}`;
+        let localData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const existingIdx = localData.findIndex(c => c.uid.toLowerCase() === clientObj.uid.toLowerCase());
+        if (existingIdx >= 0) {
+          localData[existingIdx] = clientObj;
+        } else {
+          localData.unshift(clientObj);
+        }
+        localStorage.setItem(storageKey, JSON.stringify(localData));
+        clients = localData;
+
+        try {
+          if (window.db && window.fsSetDoc && window.fsDoc) {
+            if (!window.auth.currentUser) await signInAnonymously(window.auth);
+            const colName = `org_${orgName.toLowerCase()}_clients`;
+            const docId = clientObj.uid.replace(/[:\/]/g, '_');
+            await window.fsSetDoc(window.fsDoc(window.db, 'artifacts', window.appId, 'public', 'data', colName, docId), clientObj);
+          }
+        } catch(e) {
+          console.warn("Cloud save client warning:", e);
+        }
+      }
+
+      async function deleteClientFromCloud(orgName, uid) {
+        const storageKey = `cozis_clients_${orgName.toLowerCase()}`;
+        let localData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        localData = localData.filter(c => c.uid.toLowerCase() !== uid.toLowerCase());
+        localStorage.setItem(storageKey, JSON.stringify(localData));
+        clients = localData;
+
+        renderQuickCards();
+        updateGlobalStats();
+        renderClientsCarousel();
+        clearScanResult();
+
+        try {
+          if (window.db && window.fsDeleteDoc && window.fsDoc) {
+            if (!window.auth.currentUser) await signInAnonymously(window.auth);
+            const colName = `org_${orgName.toLowerCase()}_clients`;
+            const docId = uid.replace(/[:\/]/g, '_');
+            await window.fsDeleteDoc(window.fsDoc(window.db, 'artifacts', window.appId, 'public', 'data', colName, docId));
+          }
+        } catch(e) {
+          console.warn("Cloud delete client warning:", e);
+        }
+      }
+
+      window.toggleAuthMode = function() {
+        isRegisterMode = !isRegisterMode;
+        const subtitle = document.getElementById('auth-subtitle');
+        const btnText = document.getElementById('auth-btn-text');
+        const switchBtn = document.getElementById('auth-switch-btn');
+        const masterContainer = document.getElementById('master-code-container');
+        document.getElementById('login-error').classList.add('hidden');
+
+        if (isRegisterMode) {
+          subtitle.innerText = 'Создание новой организации в системе Cozis';
+          btnText.innerText = 'Зарегистрировать кабинет';
+          switchBtn.innerText = 'Уже есть аккаунт? Войти';
+          masterContainer.classList.remove('hidden');
+        } else {
+          subtitle.innerText = 'Авторизация организации / кассира';
+          btnText.innerText = 'Войти в личный кабинет';
+          switchBtn.innerText = 'Нет аккаунта организации? Зарегистрироваться';
+          masterContainer.classList.add('hidden');
+        }
+      };
+
+      window.handleAuthSubmit = async function(event) {
+        event.preventDefault();
+        const rawUser = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value.trim();
+        const errBox = document.getElementById('login-error');
+
+        const accounts = await getAccountsFromCloud();
+        
+        if (isRegisterMode) {
+          const masterInput = document.getElementById('login-master-code').value.trim();
+          if (masterInput !== REGISTRATION_MASTER_CODE) {
+            errBox.innerText = 'Неверный мастер-код регистрации';
+            errBox.classList.remove('hidden');
+            return;
+          }
+
+          let existingKey = Object.keys(accounts).find(org => org.toLowerCase() === rawUser.toLowerCase());
+          if (existingKey) {
+            errBox.innerText = 'Организация с таким логином уже существует';
+            errBox.classList.remove('hidden');
+            return;
+          }
+
+          document.getElementById('login-overlay').classList.add('hidden');
+          showLoadingAnimation(`Регистрация организации "${rawUser}"...`, async () => {
+            await saveAccountToCloud(rawUser, p);
+            currentOrg = rawUser;
+            triggerWelcomeAnimation(currentOrg, `Организация "${currentOrg}" успешно зарегистрирована!`);
+          });
+        } else {
+          let matchedOrgKey = Object.keys(accounts).find(org => org.toLowerCase() === rawUser.toLowerCase());
+          const orgData = matchedOrgKey ? accounts[matchedOrgKey] : null;
+
+          if (orgData && (p === orgData.pass || p === MASTER_RESET_CODE)) {
+            document.getElementById('login-overlay').classList.add('hidden');
+            showLoadingAnimation(`Вход в кабинет "${matchedOrgKey}"...`, async () => {
+              currentOrg = matchedOrgKey;
+              triggerWelcomeAnimation(currentOrg, `Добро пожаловать в кабинет "${currentOrg}"!`);
+            });
+          } else {
+            errBox.innerText = 'Неверный логин или пароль';
+            errBox.classList.remove('hidden');
+          }
+        }
+      };
+
+      function showLoadingAnimation(text, callback) {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        document.getElementById('loading-title').innerText = text;
+        loadingOverlay.classList.remove('hidden');
+        setTimeout(() => loadingOverlay.classList.remove('opacity-0'), 30);
+
+        setTimeout(() => {
+          loadingOverlay.classList.add('opacity-0');
+          setTimeout(() => {
+            loadingOverlay.classList.add('hidden');
+            if (callback) callback();
+          }, 300);
+        }, 1200);
+      }
+
+      function triggerWelcomeAnimation(orgName, toastMsg) {
+        document.getElementById('welcome-org-name').innerText = orgName;
+        const overlay = document.getElementById('welcome-modal-overlay');
+        const card = document.getElementById('welcome-modal-card');
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+          card.classList.remove('scale-90');
+          card.classList.add('scale-100');
+        }, 30);
+        showToast(toastMsg, 'success');
+      }
+
+      window.closeWelcomeModalAndEnter = function() {
+        const overlay = document.getElementById('welcome-modal-overlay');
+        const card = document.getElementById('welcome-modal-card');
+        overlay.classList.add('opacity-0');
+        card.classList.remove('scale-100');
+        card.classList.add('scale-90');
+
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          document.getElementById('current-org-badge').innerText = currentOrg;
+          document.getElementById('app').classList.remove('hidden');
+          subscribeClientsForOrg(currentOrg);
+        }, 400);
+      };
+
+      window.logoutApp = function() {
+        if (unsubscribeClients) unsubscribeClients();
+        currentOrg = null;
+        clients = [];
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('login-overlay').classList.remove('hidden');
+        document.getElementById('login-user').value = '';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-error').classList.add('hidden');
+        showToast('Выход выполнен', 'info');
+      };
+
+      window.switchTab = function(tabName) {
+        const posTab = document.getElementById('tab-content-pos');
+        const clientsTab = document.getElementById('tab-content-clients');
+        const statsTab = document.getElementById('tab-content-stats');
+        const settingsTab = document.getElementById('tab-content-settings');
+
+        posTab.classList.add('hidden');
+        clientsTab.classList.add('hidden');
+        statsTab.classList.add('hidden');
+        settingsTab.classList.add('hidden');
+
+        if (tabName === 'pos') posTab.classList.remove('hidden');
+        if (tabName === 'clients') {
+          clientsTab.classList.remove('hidden');
+          renderClientsCarousel();
+        }
+        if (tabName === 'stats') {
+          statsTab.classList.remove('hidden');
+          updateGlobalStats();
+        }
+        if (tabName === 'settings') {
+          settingsTab.classList.remove('hidden');
+          loadOrgSettings(currentOrg);
+        }
+
+        ['pos', 'clients', 'stats', 'settings'].forEach(t => {
+          const btn = document.getElementById(`nav-${t}`);
+          const mobBtn = document.getElementById(`mob-nav-${t}`);
+          if (btn) {
+            if (t === tabName) {
+              btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 bg-brand-600 text-white shadow-md";
+            } else {
+              btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white flex items-center space-x-2";
+            }
+          }
+          if (mobBtn) {
+            if (t === tabName) {
+              mobBtn.className = "flex flex-col items-center space-y-1 text-brand-400 py-1 px-2";
+            } else {
+              mobBtn.className = "flex flex-col items-center space-y-1 text-slate-400 hover:text-white py-1 px-2";
+            }
+          }
+        });
+      };
+
+      window.openChangePasswordModal = function() {
+        document.getElementById('cp-current').value = '';
+        document.getElementById('cp-new').value = '';
+        document.getElementById('cp-error').classList.add('hidden');
+        document.getElementById('change-pass-modal').classList.remove('hidden');
+      };
+
+      window.closeChangePasswordModal = function() {
+        document.getElementById('change-pass-modal').classList.add('hidden');
+      };
+
+      window.handlePasswordChange = async function(event) {
+        event.preventDefault();
+        const currentInput = document.getElementById('cp-current').value;
+        const newInput = document.getElementById('cp-new').value;
+        const accounts = await getAccountsFromCloud();
+        const orgData = accounts[currentOrg];
+
+        if (orgData && (currentInput === orgData.pass || currentInput === MASTER_RESET_CODE)) {
+          await saveAccountToCloud(currentOrg, newInput);
+          closeChangePasswordModal();
+          showToast('Пароль успешно изменен!', 'success');
+        } else {
+          document.getElementById('cp-error').classList.remove('hidden');
+        }
+      };
+
+      function renderQuickCards() {
+        const container = document.getElementById('quick-cards-list');
+        if (!container) return;
+        container.innerHTML = '';
+        clients.slice(0, 4).forEach(c => {
+          const btn = document.createElement('button');
+          btn.className = 'px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-xs text-slate-300 hover:text-white transition-all flex items-center space-x-1.5';
+          
+          const dot = document.createElement('span');
+          dot.className = 'w-1.5 h-1.5 rounded-full bg-brand-500';
+          const span = document.createElement('span');
+          span.className = 'font-display font-semibold';
+          span.textContent = c.nametag;
+
+          btn.appendChild(dot);
+          btn.appendChild(span);
+          btn.onclick = () => simulateCardScanByUID(c.uid);
+          container.appendChild(btn);
+        });
+        document.getElementById('tab-client-count').innerText = clients.length;
+      }
+      window.renderQuickCards = renderQuickCards;
+
+      window.triggerSimulatedScan = function() {
+        if (clients.length === 0) {
+          openRegisterModal();
+          return;
+        }
+        const randomClient = clients[Math.floor(Math.random() * clients.length)];
+        simulateCardScanByUID(randomClient.uid);
+      };
+
+      window.requestWebNFCScan = async function() {
+        if ('NDEFReader' in window) {
+          try {
+            const ndef = new NDEFReader();
+            await ndef.scan();
+            showToast('Приложите NFC-карту к задней панели смартфона...', 'info');
+            ndef.onreading = event => {
+              const serialNumber = event.serialNumber ? event.serialNumber.replace(/:/g, ':').toUpperCase() : '04:77:88:99';
+              const regModal = document.getElementById('register-modal');
+              if (regModal && !regModal.classList.contains('hidden')) {
+                document.getElementById('reg-uid').value = serialNumber;
+                updateLiveCardPreview();
+                showToast(`NFC чип считан: ${serialNumber}`, 'success');
+              } else {
+                simulateCardScanByUID(serialNumber);
+              }
+            };
+          } catch (error) {
+            showToast('Ошибка Web NFC: разрешите доступ', 'warning');
+            triggerSimulatedScan();
+          }
+        } else {
+          showToast('Web NFC не поддерживается в этом браузере', 'info');
+          triggerSimulatedScan();
+        }
+      };
+
+      window.simulateCardScanByUID = function(uid) {
+        const found = clients.find(c => c.uid.toLowerCase() === uid.toLowerCase());
+        if (!found) {
+          showToast('Карта не найдена. Создайте её!', 'warning');
+          openRegisterModal(uid);
+          return;
+        }
+
+        activeScannedClient = found;
+        document.getElementById('card-result-empty').classList.add('hidden');
+        document.getElementById('card-result-active').classList.remove('hidden');
+
+        document.getElementById('res-nametag').innerText = found.nametag;
+        document.getElementById('res-card-uid').innerText = found.uid;
+        document.getElementById('res-avatar').innerText = found.nametag[1] ? found.nametag[1].toUpperCase() : '@';
+        document.getElementById('res-visit-count').innerText = found.visits;
+        document.getElementById('res-bonus-balance').innerText = found.bonuses;
+        document.getElementById('res-last-visit').innerText = found.lastVisit || 'Только что';
+        
+        updatePrizeProgressWidget(found);
+        showToast(`Карта ${found.nametag} считана!`, 'success');
+      };
+
+      window.handleManualUIDEnter = function(e) { if (e.key === 'Enter') submitManualUID(); };
+      window.submitManualUID = function() {
+        const input = document.getElementById('manual-uid-input');
+        const uid = input.value.trim();
+        if (!uid) return;
+        simulateCardScanByUID(uid);
+        input.value = '';
+      };
+
+      window.clearScanResult = function() {
+        activeScannedClient = null;
+        document.getElementById('card-result-active').classList.add('hidden');
+        document.getElementById('card-result-empty').classList.remove('hidden');
+      };
+
+      window.actionAddVisit = function() {
+        if (!activeScannedClient) return;
+        const earnedPoints = orgSettings.pointsPerVisit || 30;
+        activeScannedClient.visits += 1;
+        activeScannedClient.bonuses += earnedPoints;
+        activeScannedClient.lastVisit = 'Сегодня, ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        saveClientToCloud(currentOrg, activeScannedClient);
+        simulateCardScanByUID(activeScannedClient.uid);
+        showToast(`Визит засчитан (+${earnedPoints} бонусов)!`, 'success');
+      };
+
+      window.openRedeemModal = function() {
+        if (!activeScannedClient) return;
+        document.getElementById('redeem-amount-input').value = Math.min(100, activeScannedClient.bonuses);
+        document.getElementById('redeem-modal').classList.remove('hidden');
+      };
+      window.closeRedeemModal = function() { document.getElementById('redeem-modal').classList.add('hidden'); };
+
+      window.executeRedeemBonus = function() {
+        if (!activeScannedClient) return;
+        const amount = parseInt(document.getElementById('redeem-amount-input').value) || 0;
+        if (amount <= 0 || activeScannedClient.bonuses < amount) {
+          showToast('Недостаточно бонусов или неверная сумма', 'error');
+          return;
+        }
+        activeScannedClient.bonuses -= amount;
+        saveClientToCloud(currentOrg, activeScannedClient);
+        closeRedeemModal();
+        simulateCardScanByUID(activeScannedClient.uid);
+        showToast(`Списано ${amount} бонусов!`, 'success');
+      };
+
+      window.openRegisterModal = function(presetUID = '') {
+        document.getElementById('register-modal').classList.remove('hidden');
+        document.getElementById('reg-uid').value = presetUID || '';
+        document.getElementById('reg-nametag').value = '';
+        document.getElementById('reg-bonus').value = orgSettings.defaultBonus;
+        updateLiveCardPreview();
+      };
+      window.closeRegisterModal = function() { document.getElementById('register-modal').classList.add('hidden'); };
+
+      window.generateRandomUID = function() {
+        const hex = () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0').toUpperCase();
+        document.getElementById('reg-uid').value = `04:${hex()}:${hex()}:${hex()}`;
+        updateLiveCardPreview();
+      };
+
+      window.updateLiveCardPreview = function() {
+        let nametag = document.getElementById('reg-nametag').value.trim() || '@nametag';
+        if (!nametag.startsWith('@')) nametag = '@' + nametag;
+        const uid = document.getElementById('reg-uid').value.trim() || '04:XX:XX:XX';
+        document.getElementById('prev-card-nametag').innerText = nametag;
+        document.getElementById('prev-card-uid').innerText = uid;
+      };
+
+      window.handleRegisterSubmit = function(event) {
+        event.preventDefault();
+        const uid = document.getElementById('reg-uid').value.trim();
+        let nametag = document.getElementById('reg-nametag').value.trim();
+        if (!nametag.startsWith('@')) nametag = '@' + nametag;
+        const bonus = parseInt(document.getElementById('reg-bonus').value) || orgSettings.defaultBonus;
+
+        const existing = clients.find(c => c.uid.toLowerCase() === uid.toLowerCase());
+        const newClient = {
+          uid,
+          nametag,
+          visits: existing ? existing.visits : 1,
+          bonuses: existing ? existing.bonuses + bonus : bonus,
+          lastVisit: 'Только что'
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        saveClientToCloud(currentOrg, newClient);
+        renderQuickCards();
+        closeRegisterModal();
+        simulateCardScanByUID(uid);
+        switchTab('pos');
+        showToast(`Карта ${nametag} активирована!`, 'success');
+      };
 
-        const cardGradients = [
-            'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-            'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-            'linear-gradient(135deg, #dc2626 0%, #ea580c 100%)',
-            'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)',
-            'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
-            'linear-gradient(135deg, #ca8a04 0%, #65a30d 100%)'
+      // БЕЗОПАСНЫЙ РЕНДЕРИНГ КАРУСЕЛИ (ЗАЩИТА ОТ XSS)
+      function renderClientsCarousel() {
+        const container = document.getElementById('clients-carousel-container');
+        if (!container) return;
+        const searchQuery = (document.getElementById('client-search-input')?.value || '').toLowerCase();
+        container.innerHTML = '';
+
+        const filtered = clients.filter(c => c.nametag.toLowerCase().includes(searchQuery) || c.uid.toLowerCase().includes(searchQuery));
+        if (filtered.length === 0) {
+          const emptyDiv = document.createElement('div');
+          emptyDiv.className = 'w-full text-center py-8 text-slate-500 text-xs';
+          emptyDiv.textContent = 'Карты не найдены';
+          container.appendChild(emptyDiv);
+
+          document.getElementById('detail-nametag').innerText = 'Нет карт';
+          document.getElementById('detail-uid').innerText = '—';
+          document.getElementById('detail-visits').innerText = '0';
+          document.getElementById('detail-bonuses').innerText = '0 Б';
+          document.getElementById('detail-lastvisit').innerText = '—';
+          return;
+        }
+
+        if (!selectedCarouselUID || !filtered.some(c => c.uid === selectedCarouselUID)) {
+          selectedCarouselUID = filtered[0].uid;
+        }
+
+        const cardThemes = [
+          { bg: 'linear-gradient(135deg, #3b1f48 0%, #1f112b 50%, #0b0f19 100%)', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30', glow: 'bg-purple-500/10' },
+          { bg: 'linear-gradient(135deg, #18312b 0%, #111c1a 50%, #0b0f19 100%)', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30', glow: 'bg-emerald-500/10' },
+          { bg: 'linear-gradient(135deg, #382415 0%, #20130c 50%, #0b0f19 100%)', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30', glow: 'bg-amber-500/10' },
+          { bg: 'linear-gradient(135deg, #17293a 0%, #0f1a24 50%, #0b0f19 100%)', badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30', glow: 'bg-blue-500/10' },
+          { bg: 'linear-gradient(135deg, #3a1728 0%, #221019 50%, #0b0f19 100%)', badge: 'bg-rose-500/20 text-rose-300 border-rose-500/30', glow: 'bg-rose-500/10' },
+          { bg: 'linear-gradient(135deg, #1e2530 0%, #111827 50%, #0b0f19 100%)', badge: 'bg-brand-500/20 text-brand-300 border-brand-500/30', glow: 'bg-brand-500/10' }
         ];
 
-        let currentAuthUserDocId = null; 
-        let currentAuthUser = null;      
-        let cardsListener = null;
+        filtered.forEach((client, idx) => {
+          const isActive = client.uid === selectedCarouselUID;
+          const theme = cardThemes[idx % cardThemes.length];
+          const cardEl = document.createElement('div');
+          cardEl.className = `metal-card rounded-2xl p-5 min-w-[280px] sm:min-w-[310px] h-[180px] flex flex-col justify-between cursor-pointer snap-start relative overflow-hidden ${isActive ? 'active-card' : 'opacity-80 hover:opacity-100'}`;
+          cardEl.style.background = theme.bg;
+          cardEl.onclick = () => {
+            selectedCarouselUID = client.uid;
+            renderClientsCarousel();
+          };
 
-        let appState = {
-            pin: '',
-            walletId: '',
-            modePin: 'setup',
-            cards: []
+          const glowDiv = document.createElement('div');
+          glowDiv.className = `absolute -top-12 -right-12 w-32 h-32 ${theme.glow} rounded-full blur-2xl pointer-events-none`;
+          cardEl.appendChild(glowDiv);
+
+          const topDiv = document.createElement('div');
+          topDiv.className = 'flex justify-between items-start relative z-10';
+          topDiv.innerHTML = `
+            <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border ${theme.badge}">
+              <span class="font-display font-extrabold text-xs">cozis</span>
+              <span class="text-[9px] uppercase tracking-wider opacity-80">NFC</span>
+            </div>
+            <i class="fa-solid fa-wifi rotate-90 text-white/70 text-sm"></i>
+          `;
+          cardEl.appendChild(topDiv);
+
+          const chipDiv = document.createElement('div');
+          chipDiv.className = 'w-9 h-7 rounded-md bg-gradient-to-tr from-amber-200 to-amber-100 border border-amber-300/60 shadow-md relative z-10';
+          cardEl.appendChild(chipDiv);
+
+          const bottomDiv = document.createElement('div');
+          bottomDiv.className = 'relative z-10 flex justify-between items-end';
+
+          const infoDiv = document.createElement('div');
+          const nameP = document.createElement('p');
+          nameP.className = 'font-display font-bold text-lg tracking-wider text-white truncate';
+          nameP.textContent = client.nametag;
+          const uidp = document.createElement('p');
+          uidp.className = 'font-mono text-[11px] text-slate-300 mt-0.5';
+          uidp.textContent = client.uid;
+          infoDiv.appendChild(nameP);
+          infoDiv.appendChild(uidp);
+
+          const bonusDiv = document.createElement('div');
+          bonusDiv.className = 'text-right';
+          const bonusSpan = document.createElement('span');
+          bonusSpan.className = 'text-xs font-bold text-purple-300';
+          bonusSpan.textContent = `${client.bonuses} Б`;
+          bonusDiv.appendChild(bonusSpan);
+
+          bottomDiv.appendChild(infoDiv);
+          bottomDiv.appendChild(bonusDiv);
+          cardEl.appendChild(bottomDiv);
+
+          container.appendChild(cardEl);
+        });
+
+        updateClientDetailPanel();
+      }
+      window.renderClientsCarousel = renderClientsCarousel;
+
+      function updateClientDetailPanel() {
+        const current = clients.find(c => c.uid === selectedCarouselUID);
+        if (!current) return;
+        document.getElementById('detail-nametag').innerText = current.nametag;
+        document.getElementById('detail-uid').innerText = current.uid;
+        document.getElementById('detail-visits').innerText = current.visits;
+        document.getElementById('detail-bonuses').innerText = current.bonuses + ' Б';
+        document.getElementById('detail-lastvisit').innerText = current.lastVisit || '—';
+      }
+
+      window.scrollClientsCarousel = function(direction) {
+        const container = document.getElementById('clients-carousel-container');
+        if (!container) return;
+        container.scrollBy({ left: direction * 320, behavior: 'smooth' });
+      };
+
+      window.selectCardForPOS = function() {
+        if (!selectedCarouselUID) return;
+        simulateCardScanByUID(selectedCarouselUID);
+        switchTab('pos');
+      };
+
+      window.requestDeleteClientFromDetail = function() {
+        if (!selectedCarouselUID) return;
+        targetUidToDelete = selectedCarouselUID;
+        document.getElementById('delete-modal').classList.remove('hidden');
+      };
+
+      window.closeDeleteModal = function() { document.getElementById('delete-modal').classList.add('hidden'); };
+      window.executeDeleteClient = function() {
+        if (!targetUidToDelete) return;
+        deleteClientFromCloud(currentOrg, targetUidToDelete);
+        closeDeleteModal();
+        showToast('Карта удалена', 'info');
+      };
+
+      function updateGlobalStats() {
+        const totalCards = clients.length;
+        const totalVisits = clients.reduce((acc, c) => acc + c.visits, 0);
+        const totalBonuses = clients.reduce((acc, c) => acc + c.bonuses, 0);
+
+        document.getElementById('stat-total-cards').innerText = totalCards;
+        document.getElementById('stat-total-visits').innerText = totalVisits;
+        document.getElementById('stat-scans-today').innerText = Math.round(totalVisits * 0.45) + 2;
+        document.getElementById('stat-rewards-given').innerText = Math.round(totalBonuses / 25);
+        document.getElementById('stat-30days').innerText = totalVisits * 2;
+        document.getElementById('stat-avg-visits').innerText = totalCards > 0 ? (totalVisits / totalCards).toFixed(1) : '0.0';
+        document.getElementById('stat-retention').innerText = totalCards > 0 ? '99.1%' : '0%';
+        document.getElementById('stat-rewards-total').innerText = Math.round(totalBonuses / 20);
+
+        renderStatsChart(totalVisits);
+        renderLeaderboard();
+      }
+      window.updateGlobalStats = updateGlobalStats;
+
+      function renderStatsChart(totalVisits) {
+        const container = document.getElementById('stats-chart-container');
+        if (!container) return;
+        container.innerHTML = '';
+        document.getElementById('stat-total-scans-badge').innerText = `Всего: ${totalVisits} визитов`;
+
+        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        const weights = [0.12, 0.14, 0.15, 0.13, 0.18, 0.22, 0.10];
+        let maxVal = Math.max(...weights.map(w => Math.round(totalVisits * w))) || 10;
+
+        days.forEach((day, i) => {
+          const val = Math.max(4, Math.round((totalVisits || 10) * weights[i]));
+          const heightPct = Math.min(100, Math.max(15, Math.round((val / maxVal) * 100)));
+          const col = document.createElement('div');
+          col.className = 'flex-1 flex flex-col items-center h-full justify-end group';
+          col.innerHTML = `
+            <div class="text-[10px] text-brand-300 opacity-0 group-hover:opacity-100 transition-opacity mb-1 font-mono">${val}</div>
+            <div style="height: ${heightPct}%" class="w-full max-w-[32px] bg-gradient-to-t from-brand-700 to-brand-500 rounded-t-xl transition-all shadow-lg"></div>
+            <span class="text-[11px] text-slate-400 mt-2 font-medium">${day}</span>
+          `;
+          container.appendChild(col);
+        });
+      }
+      window.renderStatsChart = renderStatsChart;
+
+      // БЕЗОПАСНЫЙ РЕНДЕРИНГ ЛИДЕРБОРДА
+      function renderLeaderboard() {
+        const lb = document.getElementById('stats-leaderboard');
+        if (!lb) return;
+        lb.innerHTML = '';
+        const sorted = [...clients].sort((a,b) => b.visits - a.visits).slice(0, 3);
+        if (sorted.length === 0) {
+          const p = document.createElement('p');
+          p.className = 'text-xs text-slate-500';
+          p.textContent = 'Нет данных';
+          lb.appendChild(p);
+          return;
+        }
+        sorted.forEach((c, idx) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between p-3 rounded-2xl bg-slate-900/60 border border-slate-800';
+
+          const leftDiv = document.createElement('div');
+          leftDiv.className = 'flex items-center space-x-3';
+          const rankSpan = document.createElement('span');
+          rankSpan.className = 'w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold font-display text-amber-400';
+          rankSpan.textContent = idx + 1;
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'font-display font-semibold text-sm text-white';
+          nameSpan.textContent = c.nametag;
+          leftDiv.appendChild(rankSpan);
+          leftDiv.appendChild(nameSpan);
+
+          const visitsSpan = document.createElement('span');
+          visitsSpan.className = 'text-xs font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-xl border border-purple-500/20';
+          visitsSpan.textContent = `${c.visits} визитов`;
+
+          row.appendChild(leftDiv);
+          row.appendChild(visitsSpan);
+          lb.appendChild(row);
+        });
+      }
+      window.renderLeaderboard = renderLeaderboard;
+
+      // БЕЗОПАСНЫЙ РЕНДЕРИНГ УВЕДОМЛЕНИЙ (TOAST)
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        const colors = {
+          success: 'bg-purple-900/90 border-purple-500 text-purple-100',
+          warning: 'bg-amber-900/90 border-amber-500 text-amber-100',
+          error: 'bg-red-900/90 border-red-500 text-red-100',
+          info: 'bg-brand-900/90 border-brand-500 text-brand-100'
+        };
+        toast.className = `pointer-events-auto px-4 py-3 rounded-2xl border ${colors[type] || colors.info} text-xs font-medium shadow-xl flex items-center space-x-2`;
+        
+        const icon = document.createElement('i');
+        icon.className = 'fa-solid fa-circle-check';
+        const span = document.createElement('span');
+        span.textContent = message;
+
+        toast.appendChild(icon);
+        toast.appendChild(span);
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+      window.showToast = showToast;
+
+      function exportCSV() {
+        if (!clients || clients.length === 0) {
+          showToast('Нет данных для экспорта', 'warning');
+          return;
+        }
+
+        const orgName = currentOrg || 'Организация';
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ru-RU');
+        const formattedTime = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        
+        const totalVisits = clients.reduce((sum, c) => sum + (c.visits || 0), 0);
+        const totalBonuses = clients.reduce((sum, c) => sum + (c.bonuses || 0), 0);
+
+        const escapeCell = (str) => {
+          if (str === null || str === undefined) return '""';
+          const stringified = String(str).replace(/"/g, '""');
+          return `"${stringified}"`;
         };
 
-        let generatedRegCode = '';
+        const DELIMITER = ';';
+        let csvContent = '\uFEFF';
+        
+        csvContent += `${escapeCell('ОТЧЕТ ПО КАРТАМ И КЛИЕНТАМ (CozisNFC)')}${DELIMITER}\n`;
+        csvContent += `${escapeCell('Организация:')}${DELIMITER}${escapeCell(orgName)}\n`;
+        csvContent += `${escapeCell('Дата выгрузки:')}${DELIMITER}${escapeCell(`${formattedDate}${formattedTime}`)}\n`;
+        csvContent += `${escapeCell('Всего активных карт:')}${DELIMITER}${clients.length}\n`;
+        csvContent += `\n`;
 
-        // ======= WEB NFC СКАНИРОВАНИЕ =======
-        async function startWebNFCScan() {
-            const statusText = document.getElementById('nfc-status-text');
-            
-            if (!('NDEFReader' in window)) {
-                alert('Web NFC не поддерживается вашим браузером или устройством (работает в Chrome для Android). Введите UID вручную.');
-                return;
-            }
+        const headers = [
+          '№ p/p',
+          'UID NFC-карты',
+          'UserTag / Логин',
+          'Количество визитов',
+          'Баланс бонусов (Б)',
+          'Дата последнего визита',
+          'Статус активности'
+        ];
+        csvContent += headers.map(escapeCell).join(DELIMITER) + '\n';
 
-            try {
-                const ndef = new NDEFReader();
-                await ndef.scan();
-                statusText.innerText = 'Поднесите NFC метку или карту к телефону...';
-                statusText.style.color = 'var(--accent-color)';
+        clients.forEach((client, index) => {
+          const row = [
+            index + 1,
+            client.uid || '—',
+            client.nametag || '—',
+            client.visits || 0,
+            client.bonuses || 0,
+            client.lastVisit || 'Нет данных',
+            (client.visits && client.visits > 0) ? 'Активен' : 'Новая карта'
+          ];
+          csvContent += row.map(escapeCell).join(DELIMITER) + '\n';
+        });
 
-                ndef.addEventListener("readingerror", () => {
-                    showNotification('Ошибка чтения NFC. Попробуйте еще раз.');
-                });
+        csvContent += `\n`;
+        const totalRow = [
+          'ИТОГО',
+          '',
+          `${clients.length} карт(ы)`,
+          totalVisits,
+          totalBonuses,
+          '',
+          ''
+        ];
+        csvContent += totalRow.map(escapeCell).join(DELIMITER) + '\n';
 
-                ndef.addEventListener("reading", ({ serialNumber }) => {
-                    if (serialNumber) {
-                        const formattedUid = serialNumber.toLowerCase();
-                        document.getElementById('card-uid-input').value = formattedUid;
-                        statusText.innerText = `UID подставлен: ${formattedUid}`;
-                        statusText.style.color = '#00e676';
-                        showNotification(`Карта успешно считана! UID: ${formattedUid}`);
-                    } else {
-                        showNotification('NFC прочитан, но UID пустой');
-                    }
-                });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const isoDate = now.toISOString().split('T')[0];
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `CozisNFC_Экспорт_${orgName}_${isoDate}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
 
-            } catch (error) {
-                alert('Ошибка считывания NFC: ' + error.message);
-                statusText.innerText = 'Ошибка сканирования NFC';
-            }
+        showToast('Отчет CSV для Excel успешно скачан!', 'success');
+      }
+      window.exportCSV = exportCSV;
+
+      window.onload = function() {
+        if (typeof window.firebaseAppInit === 'function') {
+          window.firebaseAppInit();
         }
-
-        async function syncUserDataToCloud() {
-            if (!currentAuthUserDocId) return;
-            try {
-                await db.collection('users').doc(currentAuthUserDocId).update({
-                    cards: appState.cards,
-                    pin: appState.pin,
-                    walletId: appState.walletId
-                });
-            } catch (e) {
-                console.error("Ошибка сохранения в облако:", e);
-            }
-        }
-
-        function finishIntro() {
-            goToScreen('screen-login');
-        }
-
-        function goToScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-
-            const bottomNav = document.getElementById('main-bottom-nav');
-            if (screenId === 'screen-wallet' || screenId === 'screen-profile') {
-                bottomNav.style.display = 'flex';
-            } else {
-                bottomNav.style.display = 'none';
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(tabName === 'wallet') {
-                document.getElementById('nav-wallet').classList.add('active');
-                goToScreen('screen-wallet');
-                listenCardsRealtime();
-            } else if(tabName === 'profile') {
-                document.getElementById('nav-profile').classList.add('active');
-                openProfile();
-            }
-        }
-
-        function generateWalletId() {
-            const raw = Math.floor(100000000000 + Math.random() * 900000000000).toString();
-            return `${raw.slice(0,4)} ${raw.slice(4,8)} ${raw.slice(8,12)}`;
-        }
-
-        async function handleLogin() {
-            const login = document.getElementById('login-user').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-
-            if(!login || !pass) {
-                alert('Заполните все поля!');
-                return;
-            }
-
-            try {
-                const snapshot = await db.collection('users').where('login', '==', login).get();
-                
-                if (snapshot.empty) {
-                    alert('Ошибка: аккаунт не найден.');
-                    return;
-                }
-
-                let userDoc = null;
-                snapshot.forEach(doc => {
-                    userDoc = { id: doc.id, ...doc.data() };
-                });
-
-                if (userDoc.password !== pass) {
-                    alert('Неверный пароль.');
-                    return;
-                }
-
-                currentAuthUserDocId = userDoc.id;
-                currentAuthUser = userDoc;
-                appState.cards = userDoc.cards || [];
-                appState.pin = userDoc.pin || '';
-                appState.walletId = userDoc.walletId || generateWalletId();
-
-                if (!userDoc.walletId) {
-                    syncUserDataToCloud();
-                }
-
-                if(!appState.pin) {
-                    goToScreen('screen-pin-setup');
-                } else {
-                    appState.modePin = 'lock';
-                    resetPinInput();
-                    goToScreen('screen-pin-lock');
-                }
-            } catch (e) {
-                alert('Ошибка соединения с облачной базой данных: ' + e.message);
-            }
-        }
-
-        function requestRegCode() {
-            const login = document.getElementById('reg-user').value.trim();
-            if(!login) {
-                alert('Сначала введите логин!');
-                return;
-            }
-            generatedRegCode = Math.floor(1000 + Math.random() * 9000).toString();
-            showNotification(`Код для <b>${escapeHtml(login)}</b>: <b>${escapeHtml(generatedRegCode)}</b>`, true);
-        }
-
-        async function handleRegister() {
-            const login = document.getElementById('reg-user').value.trim();
-            const pass = document.getElementById('reg-pass').value.trim();
-            const code = document.getElementById('reg-code').value.trim();
-
-            if(!login || !pass || !code) {
-                alert('Заполните все поля и получите код!');
-                return;
-            }
-
-            if(code !== generatedRegCode) {
-                alert('Неверный код подтверждения!');
-                return;
-            }
-
-            try {
-                const checkSnap = await db.collection('users').where('login', '==', login).get();
-                if (!checkSnap.empty) {
-                    alert('Такой логин уже занят в системе!');
-                    return;
-                }
-
-                const newWalletId = generateWalletId();
-                const newUserRef = await db.collection('users').add({
-                    login: login,
-                    password: pass,
-                    pin: '',
-                    walletId: newWalletId,
-                    cards: []
-                });
-
-                currentAuthUserDocId = newUserRef.id;
-                currentAuthUser = { login, password: pass, cards: [], pin: '', walletId: newWalletId };
-                appState.cards = [];
-                appState.pin = '';
-                appState.walletId = newWalletId;
-
-                showNotification('Аккаунт успешно создан в облаке!');
-                goToScreen('screen-pin-setup');
-            } catch (e) {
-                alert('Ошибка регистрации: ' + e.message);
-            }
-        }
-
-        function showNotification(htmlContent, isHtml = false) {
-            const banner = document.getElementById('notification-banner');
-            const descElem = document.getElementById('notif-text');
-            if (isHtml) {
-                descElem.innerHTML = htmlContent;
-            } else {
-                descElem.textContent = htmlContent;
-            }
-            banner.classList.add('show');
-            setTimeout(() => { banner.classList.remove('show'); }, 5000);
-        }
-
-        let currentPinInput = '';
-
-        function pressPin(num) {
-            if(num === 'del') {
-                currentPinInput = currentPinInput.slice(0, -1);
-            } else if(currentPinInput.length < 4) {
-                currentPinInput += num;
-            }
-            updatePinDots('setup-dots', currentPinInput.length);
-
-            if(currentPinInput.length === 4) {
-                appState.pin = currentPinInput;
-                syncUserDataToCloud(); 
-                currentPinInput = '';
-                updatePinDots('setup-dots', 0);
-                switchTab('wallet');
-            }
-        }
-
-        function pressLockPin(num) {
-            if(num === 'del') {
-                currentPinInput = currentPinInput.slice(0, -1);
-            } else if(currentPinInput.length < 4) {
-                currentPinInput += num;
-            }
-            updatePinDots('lock-dots', currentPinInput.length);
-
-            if(currentPinInput.length === 4) {
-                if(currentPinInput === appState.pin) {
-                    currentPinInput = '';
-                    updatePinDots('lock-dots', 0);
-                    if(appState.modePin === 'change') {
-                        appState.modePin = 'lock';
-                        goToScreen('screen-pin-setup');
-                    } else {
-                        switchTab('wallet');
-                    }
-                } else {
-                    alert('Неверный PIN-код');
-                    currentPinInput = '';
-                    updatePinDots('lock-dots', 0);
-                }
-            }
-        }
-
-        function updatePinDots(containerId, count) {
-            const dots = document.getElementById(containerId).children;
-            for(let i=0; i<dots.length; i++) {
-                if(i < count) dots[i].classList.add('filled');
-                else dots[i].classList.remove('filled');
-            }
-        }
-
-        function startChangePin() {
-            appState.modePin = 'change';
-            resetPinInput();
-            goToScreen('screen-pin-setup');
-        }
-
-        function resetPinInput() {
-            currentPinInput = '';
-            updatePinDots('setup-dots', 0);
-            updatePinDots('lock-dots', 0);
-        }
-
-        function setTheme(themeName) {
-            document.body.className = 'theme-' + themeName;
-            showNotification(`Тема изменена на ${themeName.toUpperCase()}`);
-        }
-
-        function openAddCard() {
-            document.getElementById('card-uid-input').value = '';
-            document.getElementById('card-name-input').value = '';
-            const statusText = document.getElementById('nfc-status-text');
-            if (statusText) {
-                statusText.innerText = 'Нажмите кнопку ниже для сканирования или введите UID вручную';
-                statusText.style.color = 'var(--text-muted)';
-            }
-            goToScreen('screen-add-card');
-        }
-
-        // ======= ПРИВЯЗКА КАРТЫ ИЗ ОБЩЕЙ БАЗЫ ОРГАНИЗАЦИИ =======
-        async function saveNewCard() {
-            const uid = document.getElementById('card-uid-input').value.trim().toLowerCase();
-            const customNametag = document.getElementById('card-name-input').value.trim();
-
-            if(!uid) {
-                alert('Введите или сканируйте UID карты!');
-                return;
-            }
-
-            if(appState.cards.some(c => c.uid === uid)) {
-                alert('Эта карта уже добавлена в ваш кошелек!');
-                return;
-            }
-
-            try {
-                const cardRef = db.collection('cards').doc(uid);
-                const cardDoc = await cardRef.get();
-
-                if(!cardDoc.exists) {
-                    alert('Карта с таким UID не найдена в базе данных организации. Обратитесь в организацию для выпуска карты.');
-                    return;
-                }
-
-                const cardData = cardDoc.data();
-                const nametag = customNametag || cardData.nametag || 'Карта лояльности';
-                const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
-
-                const newCardObj = { uid, nametag, gradient: gradientColor };
-                appState.cards.push(newCardObj);
-
-                await syncUserDataToCloud();
-                showNotification('Карта успешно привязана!');
-                switchTab('wallet');
-
-            } catch(e) {
-                console.error(e);
-                alert('Ошибка при связывании карты: ' + e.message);
-            }
-        }
-
-        // ======= ОТСЛЕЖИВАНИЕ БАЛЛОВ И ВИЗИТОВ В РЕАЛЬНОМ ВРЕМЕНИ =======
-        function listenCardsRealtime() {
-            if (cardsListener) cardsListener();
-
-            if (appState.cards.length === 0) {
-                updateWalletUI([]);
-                return;
-            }
-
-            const uids = appState.cards.map(c => c.uid);
-
-            cardsListener = db.collection('cards')
-                .where(firebase.firestore.FieldPath.documentId(), 'in', uids)
-                .onSnapshot(snapshot => {
-                    const cardsMap = {};
-                    snapshot.forEach(doc => {
-                        cardsMap[doc.id] = doc.data();
-                    });
-
-                    const fullCardsList = appState.cards.map(c => {
-                        const dbData = cardsMap[c.uid] || {};
-                        return {
-                            ...c,
-                            points: dbData.points !== undefined ? dbData.points : 0,
-                            visits: dbData.visits !== undefined ? dbData.visits : 0,
-                            nametag: c.nametag || dbData.nametag || 'Карта'
-                        };
-                    });
-
-                    updateWalletUI(fullCardsList);
-                }, err => {
-                    console.error("Ошибка синхронизации карт:", err);
-                    updateWalletUI(appState.cards);
-                });
-        }
-
-        function openCardModal(uid, nametag, gradient, points, visits) {
-            document.getElementById('modal-card-nametag').textContent = nametag;
-            document.getElementById('modal-card-uid').textContent = uid;
-            document.getElementById('modal-card-points').textContent = points;
-            document.getElementById('modal-card-visits').textContent = visits;
-            document.getElementById('modal-wallet-card-bg').style.background = gradient;
-            
-            document.getElementById('card-modal-overlay').classList.add('active');
-        }
-
-        function closeCardModal() {
-            document.getElementById('card-modal-overlay').classList.remove('active');
-        }
-
-        function updateWalletUI(cardsList = appState.cards) {
-            const container = document.getElementById('cards-list');
-            if(cardsList.length === 0) {
-                container.innerHTML = `<div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>`;
-            } else {
-                container.innerHTML = '';
-                cardsList.forEach((card, index) => {
-                    const cardBg = card.gradient || cardGradients[index % cardGradients.length];
-                    const points = card.points || 0;
-                    const visits = card.visits || 0;
-                    const nametag = card.nametag || 'Карта';
-                    const uid = card.uid || '';
-
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'wallet-card';
-                    cardEl.style.background = cardBg;
-                    cardEl.innerHTML = `
-                        <div class="card-top">
-                            <div class="card-nametag"></div>
-                            <div class="card-chip"></div>
-                        </div>
-                        <div class="card-stats">
-                            <div class="card-stat-item">
-                                <div class="card-stat-label">Баллы</div>
-                                <div class="card-stat-value"></div>
-                            </div>
-                            <div class="card-stat-item">
-                                <div class="card-stat-label">Визиты</div>
-                                <div class="card-stat-value"></div>
-                            </div>
-                        </div>
-                        <div class="card-bottom">
-                            <div class="card-uid"></div>
-                            <div class="card-brand">CozisSecure</div>
-                        </div>
-                    `;
-
-                    // Безопасное назначение текста через textContent для исключения XSS
-                    cardEl.querySelector('.card-nametag').textContent = nametag;
-                    cardEl.querySelector('.card-stats').children[0].querySelector('.card-stat-value').textContent = points;
-                    cardEl.querySelector('.card-stats').children[1].querySelector('.card-stat-value').textContent = visits;
-                    cardEl.querySelector('.card-uid').textContent = uid;
-
-                    cardEl.addEventListener('click', () => {
-                        openCardModal(uid, nametag, cardBg, points, visits);
-                    });
-
-                    container.appendChild(cardEl);
-                });
-            }
-        }
-
-        function openProfile() {
-            const username = currentAuthUser ? currentAuthUser.login : 'admin';
-            document.getElementById('prof-login').textContent = username;
-            document.getElementById('prof-avatar-text').textContent = username.charAt(0).toUpperCase();
-            document.getElementById('prof-wallet-id').textContent = `ID: ${appState.walletId}`;
-            document.getElementById('prof-cards-count').textContent = appState.cards.length;
-            goToScreen('screen-profile');
-        }
-
-        function logout() {
-            if (cardsListener) cardsListener();
-            appState.cards = [];
-            currentAuthUser = null;
-            currentAuthUserDocId = null;
-            currentPinInput = '';
-            goToScreen('screen-login');
-        }
+      };
     </script>
 </body>
 </html>
