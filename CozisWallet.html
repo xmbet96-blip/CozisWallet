@@ -4,10 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CozisWallet</title>
+    
+    <!-- Настройки PWA (Установка на рабочий стол ПК и телефона) -->
+    <meta name="theme-color" content="#110c24">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CozisWallet">
+    
+    <!-- SVG-Иконка приложения (Без букв) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
+
+    <!-- Dinamic Web App Manifest -->
+    <script>
+        const manifest = {
+            "name": "CozisWallet",
+            "short_name": "CozisWallet",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#05030a",
+            "theme_color": "#110c24",
+            "icons": [{
+                "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>",
+                "sizes": "512x512",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+    </script>
+
     <!-- Подключение единого фирменного шрифта Syne -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
-    <!-- Подключаем Firebase SDK (Compat версии для работы прямо в браузере) -->
+    <!-- Подключаем Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -225,6 +262,10 @@
             margin-top: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         body.theme-luxury .btn { color: #08080a; }
@@ -354,11 +395,10 @@
             padding-right: 4px;
         }
 
-        /* Дизайн карточек */
         .wallet-card {
             width: 100%;
-            min-height: 190px;
-            height: 190px;
+            min-height: 200px;
+            height: 200px;
             flex-shrink: 0;
             border-radius: 22px;
             padding: 22px;
@@ -406,6 +446,22 @@
             border-radius: 4px;
         }
 
+        .card-stats {
+            display: flex;
+            gap: 16px;
+            z-index: 2;
+            margin-top: 10px;
+        }
+        .card-stat-item {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-stat-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; font-weight: 800; }
+        .card-stat-value { font-size: 16px; font-weight: 800; }
+
         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; }
         .card-uid {
             font-family: monospace;
@@ -424,7 +480,6 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        /* 3D Оверлей модального окна для карточки */
         .card-modal-overlay {
             position: absolute;
             inset: 0;
@@ -461,7 +516,7 @@
 
         .modal-wallet-card {
             width: 100%;
-            height: 220px;
+            height: 230px;
             border-radius: 24px;
             padding: 24px;
             display: flex;
@@ -482,7 +537,6 @@
             font-weight: 700;
         }
 
-        /* Профиль */
         .profile-header-card {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
@@ -582,7 +636,7 @@
         .theme-option:hover::after { opacity: 1; }
         .theme-option:active { transform: scale(0.96); }
 
-        .nfc-animation-box { text-align: center; padding: 10px 0 20px; flex-shrink: 0; }
+        .nfc-animation-box { text-align: center; padding: 10px 0 15px; flex-shrink: 0; }
         .nfc-pulse {
             width: 70px;
             height: 70px;
@@ -602,6 +656,13 @@
             70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
         }
+
+        #install-pwa-btn {
+            display: none;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: #0b0f19;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body class="theme-purple">
@@ -612,7 +673,7 @@
             <div class="notif-desc" id="notif-text">Ваш код: <b>----</b></div>
         </div>
 
-        <!-- МОДАЛЬНОЕ ОКНО ДЛЯ 3D ПРОМОТКИ И ПРОСМОТРА КАРТЫ -->
+        <!-- МОДАЛЬНОЕ ОКНО ДЛЯ 3D ПРОСМОТРА КАРТЫ -->
         <div id="card-modal-overlay" class="card-modal-overlay" onclick="closeCardModal()">
             <div class="modal-card-container" id="modal-card-container" onclick="event.stopPropagation()">
                 <div class="modal-wallet-card" id="modal-wallet-card-bg">
@@ -620,9 +681,15 @@
                         <div class="card-nametag" id="modal-card-nametag"></div>
                         <div class="card-chip"></div>
                     </div>
-                    <div style="text-align: center; margin: 10px 0;">
-                        <div style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin-bottom: 4px;">NFC СТАТУС: АКТИВЕН</div>
-                        <div style="font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6);">Защищенное хранилище</div>
+                    <div class="card-stats">
+                        <div class="card-stat-item">
+                            <div class="card-stat-label">Баллы</div>
+                            <div class="card-stat-value" id="modal-card-points">0</div>
+                        </div>
+                        <div class="card-stat-item">
+                            <div class="card-stat-label">Визиты</div>
+                            <div class="card-stat-value" id="modal-card-visits">0</div>
+                        </div>
                     </div>
                     <div class="card-bottom">
                         <div class="card-uid" id="modal-card-uid" style="font-size: 17px;"></div>
@@ -639,7 +706,6 @@
             <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.85) 100%); pointer-events: none; z-index: 12;"></div>
             <div class="intro-welcome-text">Добро пожаловать в CozisWallet</div>
             
-            <!-- Нижнее размытие (примерно 1/4 экрана) с плавным переходом -->
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 28%; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); mask-image: linear-gradient(to bottom, transparent 0%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%); pointer-events: none; z-index: 13;"></div>
 
             <button class="skip-btn" onclick="finishIntro()">SKIP</button>
@@ -752,6 +818,12 @@
                 <div class="logo-text">CozisWallet</div>
             </div>
 
+            <!-- Кнопка установки PWA приложения -->
+            <button class="btn" id="install-pwa-btn" onclick="installPWA()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Установить CozisWallet
+            </button>
+
             <h1 style="font-size: 24px; margin-bottom: 14px; flex-shrink: 0;">Ваши карты</h1>
 
             <div class="cards-container" id="cards-list">
@@ -761,7 +833,7 @@
             <button class="btn" onclick="openAddCard()">Добавить карту</button>
         </div>
 
-        <!-- 6. ДОБАВЛЕНИЕ КАРТЫ -->
+        <!-- 6. ДОБАВЛЕНИЕ КАРТЫ С WEB NFC СКАНЕРОМ -->
         <div id="screen-add-card" class="screen">
             <div class="header">
                 <h1>Новая карта</h1>
@@ -774,19 +846,24 @@
                 <div class="nfc-pulse">
                     <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 0 1 7.54 16.6" stroke-width="2" stroke-linecap="round"/><path d="M12 6a6 6 0 0 1 4.52 9.96" stroke-width="2" stroke-linecap="round"/><path d="M12 10a2 2 0 0 1 1.51 3.32" stroke-width="2" stroke-linecap="round"/></svg>
                 </div>
-                <p style="font-size: 14px; color: var(--text-muted); font-weight: 700;">Приложите физическую карту к задней панели телефона</p>
+                <p id="nfc-status-text" style="font-size: 14px; color: var(--text-muted); font-weight: 700;">Нажмите кнопку ниже для сканирования или введите UID вручную</p>
             </div>
+
+            <button class="btn btn-secondary" style="margin-bottom: 16px; border-color: var(--accent-color);" onclick="startWebNFCScan()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a10 10 0 0 1 7.54 16.6"/><path d="M12 6a6 6 0 0 1 4.52 9.96"/><circle cx="12" cy="12" r="2"/></svg>
+                Сканировать NFC (Web NFC)
+            </button>
 
             <div class="input-group">
                 <label>UID карты</label>
-                <input type="text" id="card-uid-input" autocomplete="off" placeholder="Например: 04:A3:8B:2C">
+                <input type="text" id="card-uid-input" autocomplete="off" placeholder="Например: 04:a3:8b:2c">
             </div>
             <div class="input-group">
-                <label>Nametag</label>
-                <input type="text" id="card-name-input" autocomplete="off" placeholder="Например: Пропуск в офис">
+                <label>Название (Nametag)</label>
+                <input type="text" id="card-name-input" autocomplete="off" placeholder="Например: Карта лояльности">
             </div>
 
-            <button class="btn" onclick="saveNewCard()">Сохранить карту</button>
+            <button class="btn" onclick="saveNewCard()">Привязать карту</button>
         </div>
 
         <!-- 7. ПРОФИЛЬ И НАСТРОЙКИ -->
@@ -842,6 +919,27 @@
     </div>
 
     <script>
+        // ======= PWA ОБРАБОТЧИК УСТАНОВКИ =======
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('install-pwa-btn');
+            if (installBtn) installBtn.style.display = 'flex';
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showNotification('CozisWallet успешно установлен!');
+                }
+                deferredPrompt = null;
+                document.getElementById('install-pwa-btn').style.display = 'none';
+            }
+        }
+
         // ======= КОНФИГУРАЦИЯ FIREBASE =======
         const firebaseConfig = {
             apiKey: "AIzaSyDLRUPasEl1_fkGi3ApAryPbw08dSyxPgM",
@@ -853,7 +951,6 @@
             measurementId: "G-4PY74LBSK2"
         };
 
-        // Инициализация Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -868,6 +965,7 @@
 
         let currentAuthUserDocId = null; 
         let currentAuthUser = null;      
+        let cardsListener = null;
 
         let appState = {
             pin: '',
@@ -877,6 +975,43 @@
         };
 
         let generatedRegCode = '';
+
+        // ======= WEB NFC СКАНИРОВАНИЕ =======
+        async function startWebNFCScan() {
+            const statusText = document.getElementById('nfc-status-text');
+            
+            if (!('NDEFReader' in window)) {
+                alert('Web NFC не поддерживается вашим браузером или устройством (работает в Chrome для Android). Введите UID вручную.');
+                return;
+            }
+
+            try {
+                const ndef = new NDEFReader();
+                await ndef.scan();
+                statusText.innerText = 'Поднесите NFC метку или карту к телефону...';
+                statusText.style.color = 'var(--accent-color)';
+
+                ndef.addEventListener("readingerror", () => {
+                    showNotification('Ошибка чтения NFC. Попробуйте еще раз.');
+                });
+
+                ndef.addEventListener("reading", ({ serialNumber }) => {
+                    if (serialNumber) {
+                        const formattedUid = serialNumber.toLowerCase();
+                        document.getElementById('card-uid-input').value = formattedUid;
+                        statusText.innerText = `UID подставлен: ${formattedUid}`;
+                        statusText.style.color = '#00e676';
+                        showNotification(`Карта успешно считана! UID: ${formattedUid}`);
+                    } else {
+                        showNotification('NFC прочитан, но UID пустой');
+                    }
+                });
+
+            } catch (error) {
+                alert('Ошибка считывания NFC: ' + error.message);
+                statusText.innerText = 'Ошибка сканирования NFC';
+            }
+        }
 
         async function syncUserDataToCloud() {
             if (!currentAuthUserDocId) return;
@@ -912,7 +1047,7 @@
             if(tabName === 'wallet') {
                 document.getElementById('nav-wallet').classList.add('active');
                 goToScreen('screen-wallet');
-                updateWalletUI();
+                listenCardsRealtime();
             } else if(tabName === 'profile') {
                 document.getElementById('nav-profile').classList.add('active');
                 openProfile();
@@ -1049,7 +1184,6 @@
                 syncUserDataToCloud(); 
                 currentPinInput = '';
                 updatePinDots('setup-dots', 0);
-                updateWalletUI();
                 switchTab('wallet');
             }
         }
@@ -1108,31 +1242,98 @@
         function openAddCard() {
             document.getElementById('card-uid-input').value = '';
             document.getElementById('card-name-input').value = '';
+            const statusText = document.getElementById('nfc-status-text');
+            if (statusText) {
+                statusText.innerText = 'Нажмите кнопку ниже для сканирования или введите UID вручную';
+                statusText.style.color = 'var(--text-muted)';
+            }
             goToScreen('screen-add-card');
         }
 
+        // ======= ПРИВЯЗКА КАРТЫ ИЗ ОБЩЕЙ БАЗЫ ОРГАНИЗАЦИИ =======
         async function saveNewCard() {
-            const uid = document.getElementById('card-uid-input').value.trim();
-            const nametag = document.getElementById('card-name-input').value.trim();
+            const uid = document.getElementById('card-uid-input').value.trim().toLowerCase();
+            const customNametag = document.getElementById('card-name-input').value.trim();
 
-            if(!uid || !nametag) {
-                alert('Заполните UID и nametag');
+            if(!uid) {
+                alert('Введите или сканируйте UID карты!');
                 return;
             }
 
-            const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
-            const newCard = { uid, nametag, gradient: gradientColor };
-            
-            appState.cards.push(newCard);
-            await syncUserDataToCloud(); 
+            if(appState.cards.some(c => c.uid === uid)) {
+                alert('Эта карта уже добавлена в ваш кошелек!');
+                return;
+            }
 
-            updateWalletUI();
-            switchTab('wallet');
+            try {
+                // Проверяем наличие карты в коллекции cards (созданной через CozisNFC)
+                const cardRef = db.collection('cards').doc(uid);
+                const cardDoc = await cardRef.get();
+
+                if(!cardDoc.exists) {
+                    alert('Карта с таким UID не найдена в базе данных организации. Обратитесь в организацию для выпуска карты.');
+                    return;
+                }
+
+                const cardData = cardDoc.data();
+                const nametag = customNametag || cardData.nametag || 'Карта лояльности';
+                const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
+
+                const newCardObj = { uid, nametag, gradient: gradientColor };
+                appState.cards.push(newCardObj);
+
+                await syncUserDataToCloud();
+                showNotification('Карта успешно привязана!');
+                switchTab('wallet');
+
+            } catch(e) {
+                console.error(e);
+                alert('Ошибка при связывании карты: ' + e.message);
+            }
         }
 
-        function openCardModal(uid, nametag, gradient) {
+        // ======= ОТСЛЕЖИВАНИЕ БАЛЛОВ И ВИЗИТОВ В РЕАЛЬНОМ ВРЕМЕНИ =======
+        function listenCardsRealtime() {
+            if (cardsListener) cardsListener();
+
+            if (appState.cards.length === 0) {
+                updateWalletUI([]);
+                return;
+            }
+
+            const uids = appState.cards.map(c => c.uid);
+
+            // Подписываемся на коллекцию 'cards' для получения актуальных points и visits
+            cardsListener = db.collection('cards')
+                .where(firebase.firestore.FieldPath.documentId(), 'in', uids)
+                .onSnapshot(snapshot => {
+                    const cardsMap = {};
+                    snapshot.forEach(doc => {
+                        cardsMap[doc.id] = doc.data();
+                    });
+
+                    const fullCardsList = appState.cards.map(c => {
+                        const dbData = cardsMap[c.uid] || {};
+                        return {
+                            ...c,
+                            points: dbData.points !== undefined ? dbData.points : 0,
+                            visits: dbData.visits !== undefined ? dbData.visits : 0,
+                            nametag: c.nametag || dbData.nametag || 'Карта'
+                        };
+                    });
+
+                    updateWalletUI(fullCardsList);
+                }, err => {
+                    console.error("Ошибка синхронизации карт:", err);
+                    updateWalletUI(appState.cards);
+                });
+        }
+
+        function openCardModal(uid, nametag, gradient, points, visits) {
             document.getElementById('modal-card-nametag').innerText = nametag;
             document.getElementById('modal-card-uid').innerText = uid;
+            document.getElementById('modal-card-points').innerText = points;
+            document.getElementById('modal-card-visits').innerText = visits;
             document.getElementById('modal-wallet-card-bg').style.background = gradient;
             
             document.getElementById('card-modal-overlay').classList.add('active');
@@ -1142,23 +1343,35 @@
             document.getElementById('card-modal-overlay').classList.remove('active');
         }
 
-        function updateWalletUI() {
+        function updateWalletUI(cardsList = appState.cards) {
             const container = document.getElementById('cards-list');
-            if(appState.cards.length === 0) {
+            if(cardsList.length === 0) {
                 container.innerHTML = `<div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>`;
             } else {
                 container.innerHTML = '';
-                appState.cards.forEach((card, index) => {
+                cardsList.forEach((card, index) => {
                     const cardBg = card.gradient || cardGradients[index % cardGradients.length];
-                    const safeNametag = card.nametag.replace(/'/g, "\\'");
+                    const safeNametag = (card.nametag || 'Карта').replace(/'/g, "\\'");
                     const safeUid = card.uid.replace(/'/g, "\\'");
                     const safeGradient = cardBg.replace(/'/g, "\\'");
+                    const points = card.points || 0;
+                    const visits = card.visits || 0;
 
                     container.innerHTML += `
-                        <div class="wallet-card" style="background: ${cardBg};" onclick="openCardModal('${safeUid}', '${safeNametag}', '${safeGradient}')">
+                        <div class="wallet-card" style="background: ${cardBg};" onclick="openCardModal('${safeUid}', '${safeNametag}', '${safeGradient}', ${points}, ${visits})">
                             <div class="card-top">
                                 <div class="card-nametag">${card.nametag}</div>
                                 <div class="card-chip"></div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="card-stat-item">
+                                    <div class="card-stat-label">Баллы</div>
+                                    <div class="card-stat-value">${points}</div>
+                                </div>
+                                <div class="card-stat-item">
+                                    <div class="card-stat-label">Визиты</div>
+                                    <div class="card-stat-value">${visits}</div>
+                                </div>
                             </div>
                             <div class="card-bottom">
                                 <div class="card-uid">${card.uid}</div>
@@ -1180,6 +1393,7 @@
         }
 
         function logout() {
+            if (cardsListener) cardsListener();
             appState.cards = [];
             currentAuthUser = null;
             currentAuthUserDocId = null;
