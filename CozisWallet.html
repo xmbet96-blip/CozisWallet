@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CozisWallet</title>
+    <!-- Подключение единого фирменного шрифта Syne -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Подключаем Firebase SDK (Compat версии для работы прямо в браузере) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #05030a;
+            --surface-color: #110c24;
+            --surface-hover: #1d143c;
+            --accent-color: #c084fc;
+            --accent-hover: #a855f7;
+            --text-main: #fdf4ff;
+            --text-muted: #a78bfa;
+            --border-color: rgba(192, 132, 252, 0.2);
+            --danger: #ef4444;
+            --app-font: 'Syne', sans-serif;
+            --font-letter-spacing: 0.5px;
+        }
+
+        body.theme-luxury {
+            --bg-color: #08080a;
+            --surface-color: #121216;
+            --surface-hover: #1c1c24;
+            --accent-color: #e2e8f0;
+            --accent-hover: #ffffff;
+            --text-main: #ffffff;
+            --text-muted: #71717a;
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        body.theme-orange {
+            --bg-color: #0a0403;
+            --surface-color: #1c0a07;
+            --surface-hover: #2e110c;
+            --accent-color: #ff5722;
+            --accent-hover: #f4511e;
+            --text-main: #fff3e0;
+            --text-muted: #ffb74d;
+            --border-color: rgba(255, 87, 34, 0.25);
+        }
+
+        body.theme-green {
+            --bg-color: #020805;
+            --surface-color: #071c10;
+            --surface-hover: #0d2e1a;
+            --accent-color: #00e676;
+            --accent-hover: #00c853;
+            --text-main: #e8f5e9;
+            --text-muted: #81c784;
+            --border-color: rgba(0, 230, 118, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--app-font);
+            letter-spacing: var(--font-letter-spacing);
+        }
+
+        body {
+            background-color: #010204;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 414px;
+            height: 896px;
+            background-color: var(--bg-color);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            border: 8px solid #141824;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            padding: 24px;
+            padding-bottom: 95px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        #screen-intro {
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: #000;
+        }
+
+        .skip-btn {
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            z-index: 20;
+            opacity: 0;
+            animation: fadeInSkip 0.5s ease 2s forwards;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .skip-btn:hover { background: rgba(0, 0, 0, 0.85); }
+        .skip-btn:active { transform: translateX(-50%) scale(0.96); }
+
+        .intro-welcome-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            z-index: 15;
+            opacity: 0;
+            animation: fadeInWelcome 1.5s ease 0.5s forwards;
+            text-shadow: 0 2px 16px rgba(0,0,0,0.95);
+            width: 90%;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInWelcome {
+            from { opacity: 0; transform: translate(-50%, -50%) translateY(-20px); }
+            to { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+        }
+
+        @keyframes fadeInSkip {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        p.subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .input-group { margin-bottom: 16px; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent-color);
+            color: #0b0f19;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        body.theme-luxury .btn { color: #08080a; }
+        .btn:hover { background-color: var(--accent-hover); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background-color: var(--surface-color);
+            color: var(--text-main);
+            box-shadow: none;
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover { background-color: var(--surface-hover); }
+
+        .link-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .link-text span { color: var(--accent-color); cursor: pointer; }
+
+        #notification-banner {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            right: 20px;
+            background: var(--surface-color);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-color);
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+        #notification-banner.show { top: 20px; }
+        .notif-title { font-size: 12px; color: var(--accent-color); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .notif-desc { font-size: 15px; color: var(--text-main); font-weight: 700; }
+
+        .pin-dots {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .pin-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            background: transparent;
+            transition: 0.2s;
+        }
+        .pin-dot.filled { background: var(--accent-color); }
+        
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .pin-key {
+            aspect-ratio: 1;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .pin-key:hover { background: var(--surface-hover); }
+        .pin-key:active { transform: scale(0.92); }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        .logo-text { font-size: 24px; font-weight: 800; letter-spacing: 1px; color: var(--text-main); }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 75px;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+            transition: color 0.2s;
+        }
+        .nav-item.active { color: var(--accent-color); }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; stroke: currentColor; }
+
+        .cards-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-right: 4px;
+        }
+
+        /* Дизайн карточек */
+        .wallet-card {
+            width: 100%;
+            min-height: 190px;
+            height: 190px;
+            flex-shrink: 0;
+            border-radius: 22px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .wallet-card:hover { transform: translateY(-3px); box-shadow: 0 16px 35px rgba(0,0,0,0.6); }
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; z-index: 2; }
+        .card-nametag { font-size: 20px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+        .card-chip {
+            width: 44px;
+            height: 32px;
+            background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .card-chip::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(0,0,0,0.25);
+            border-radius: 4px;
+        }
+
+        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; }
+        .card-uid {
+            font-family: monospace;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .card-brand {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.75);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 3D Оверлей модального окна для карточки */
+        .card-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(14px);
+            z-index: 600;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            perspective: 1200px;
+        }
+        .card-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card-container {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.3) rotateY(-180deg);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-modal-overlay.active .modal-card-container {
+            transform: scale(1) rotateY(0deg);
+        }
+
+        .modal-wallet-card {
+            width: 100%;
+            height: 220px;
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .empty-cards {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        /* Профиль */
+        .profile-header-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-color), var(--surface-hover));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0b0f19;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .profile-username { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+        .profile-wallet-id { font-size: 13px; color: var(--accent-color); font-weight: 800; font-family: monospace; letter-spacing: 1px; }
+
+        .profile-section-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            margin-top: 16px;
+            letter-spacing: 1px;
+        }
+
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .stat-box {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+            font-family: monospace;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .theme-option {
+            padding: 16px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .theme-option::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .theme-option:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 25px rgba(192, 132, 252, 0.25);
+        }
+        .theme-option:hover::after { opacity: 1; }
+        .theme-option:active { transform: scale(0.96); }
+
+        .nfc-animation-box { text-align: center; padding: 10px 0 20px; flex-shrink: 0; }
+        .nfc-pulse {
+            width: 70px;
+            height: 70px;
+            background: rgba(192, 132, 252, 0.15);
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+        .nfc-pulse svg { width: 32px; height: 32px; stroke: currentColor; }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
+        }
+    </style>
+</head>
+<body class="theme-purple">
+
+    <div class="phone-frame">
+        <div id="notification-banner">
+            <div class="notif-title">CozisWallet Security</div>
+            <div class="notif-desc" id="notif-text">Ваш код: <b>----</b></div>
+        </div>
+
+        <!-- МОДАЛЬНОЕ ОКНО ДЛЯ 3D ПРОМОТКИ И ПРОСМОТРА КАРТЫ -->
+        <div id="card-modal-overlay" class="card-modal-overlay" onclick="closeCardModal()">
+            <div class="modal-card-container" id="modal-card-container" onclick="event.stopPropagation()">
+                <div class="modal-wallet-card" id="modal-wallet-card-bg">
+                    <div class="card-top">
+                        <div class="card-nametag" id="modal-card-nametag"></div>
+                        <div class="card-chip"></div>
+                    </div>
+                    <div style="text-align: center; margin: 10px 0;">
+                        <div style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin-bottom: 4px;">NFC СТАТУС: АКТИВЕН</div>
+                        <div style="font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6);">Защищенное хранилище</div>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="card-uid" id="modal-card-uid" style="font-size: 17px;"></div>
+                        <div class="card-brand">CozisSecure</div>
+                    </div>
+                </div>
+                <button class="btn" style="margin-top: 24px; background: var(--surface-color); color: var(--text-main); border: 1px solid var(--border-color);" onclick="closeCardModal()">Закрыть карту</button>
+            </div>
+        </div>
+
+        <!-- 0. ЭКРАН ЗАСТАВКИ -->
+        <div id="screen-intro" class="screen active">
+            <video src="video.mp4" autoplay muted loop playsinline style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover; z-index: 10;"></video>
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.85) 100%); pointer-events: none; z-index: 12;"></div>
+            <div class="intro-welcome-text">Добро пожаловать в CozisWallet</div>
+            
+            <!-- Нижнее размытие (примерно 1/4 экрана) с плавным переходом -->
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 28%; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); mask-image: linear-gradient(to bottom, transparent 0%, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%); pointer-events: none; z-index: 13;"></div>
+
+            <button class="skip-btn" onclick="finishIntro()">SKIP</button>
+        </div>
+
+        <!-- 1. ЭКРАН ВХОДА -->
+        <div id="screen-login" class="screen" style="padding-bottom: 24px;">
+            <div style="margin-top: 40px;">
+                <h1>CozisWallet</h1>
+                <p class="subtitle">Облачное хранилище карт и пропусков</p>
+            </div>
+            
+            <div class="input-group">
+                <label>Логин</label>
+                <input type="text" id="login-user" autocomplete="off" placeholder="Ваш логин">
+            </div>
+            <div class="input-group">
+                <label>Пароль</label>
+                <input type="password" id="login-pass" autocomplete="new-password" placeholder="••••••••">
+            </div>
+            
+            <button class="btn" onclick="handleLogin()">Войти</button>
+            <div class="link-text">Нет аккаунта? <span onclick="goToScreen('screen-register')">Зарегистрироваться</span></div>
+        </div>
+
+        <!-- 2. ЭКРАН РЕГИСТРАЦИИ -->
+        <div id="screen-register" class="screen" style="padding-bottom: 24px;">
+            <div style="margin-top: 10px;">
+                <h1>Регистрация</h1>
+                <p class="subtitle">Создайте новый аккаунт в системе</p>
+            </div>
+            
+            <div class="input-group">
+                <label>Логин</label>
+                <input type="text" id="reg-user" autocomplete="off" placeholder="Придумайте логин">
+            </div>
+            <div class="input-group">
+                <label>Пароль</label>
+                <input type="password" id="reg-pass" autocomplete="new-password" placeholder="Придумайте пароль">
+            </div>
+            
+            <button class="btn btn-secondary" onclick="requestRegCode()">Получить код</button>
+
+            <div class="input-group" style="margin-top: 12px;">
+                <label>Код из уведомления</label>
+                <input type="text" id="reg-code" autocomplete="off" placeholder="Введите 4 цифры">
+            </div>
+            
+            <button class="btn" onclick="handleRegister()">Зарегистрироваться</button>
+            <div class="link-text">Уже есть аккаунт? <span onclick="goToScreen('screen-login')">Войти</span></div>
+        </div>
+
+        <!-- 3. НАСТРОЙКА PIN -->
+        <div id="screen-pin-setup" class="screen" style="justify-content: center; align-items: center; text-align: center; padding-bottom: 24px;">
+            <h1>Защита кошелька</h1>
+            <p class="subtitle">Придумайте PIN-код из 4 цифр</p>
+            
+            <div class="pin-dots" id="setup-dots">
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            </div>
+
+            <div class="pin-pad">
+                <div class="pin-key" onclick="pressPin('1')">1</div>
+                <div class="pin-key" onclick="pressPin('2')">2</div>
+                <div class="pin-key" onclick="pressPin('3')">3</div>
+                <div class="pin-key" onclick="pressPin('4')">4</div>
+                <div class="pin-key" onclick="pressPin('5')">5</div>
+                <div class="pin-key" onclick="pressPin('6')">6</div>
+                <div class="pin-key" onclick="pressPin('7')">7</div>
+                <div class="pin-key" onclick="pressPin('8')">8</div>
+                <div class="pin-key" onclick="pressPin('9')">9</div>
+                <div class="pin-key" style="visibility:hidden"></div>
+                <div class="pin-key" onclick="pressPin('0')">0</div>
+                <div class="pin-key" onclick="pressPin('del')">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ВХОД ПО PIN -->
+        <div id="screen-pin-lock" class="screen" style="justify-content: center; align-items: center; text-align: center; padding-bottom: 24px;">
+            <h1>Введите PIN</h1>
+            <p class="subtitle">Доступ к CozisWallet заблокирован</p>
+            
+            <div class="pin-dots" id="lock-dots">
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            </div>
+
+            <div class="pin-pad">
+                <div class="pin-key" onclick="pressLockPin('1')">1</div>
+                <div class="pin-key" onclick="pressLockPin('2')">2</div>
+                <div class="pin-key" onclick="pressLockPin('3')">3</div>
+                <div class="pin-key" onclick="pressLockPin('4')">4</div>
+                <div class="pin-key" onclick="pressLockPin('5')">5</div>
+                <div class="pin-key" onclick="pressLockPin('6')">6</div>
+                <div class="pin-key" onclick="pressLockPin('7')">7</div>
+                <div class="pin-key" onclick="pressLockPin('8')">8</div>
+                <div class="pin-key" onclick="pressLockPin('9')">9</div>
+                <div class="pin-key" style="visibility:hidden"></div>
+                <div class="pin-key" onclick="pressLockPin('0')">0</div>
+                <div class="pin-key" onclick="pressLockPin('del')">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. ГЛАВНАЯ СТРАНИЦА (КОШЕЛЕК) -->
+        <div id="screen-wallet" class="screen">
+            <div class="header">
+                <div class="logo-text">CozisWallet</div>
+            </div>
+
+            <h1 style="font-size: 24px; margin-bottom: 14px; flex-shrink: 0;">Ваши карты</h1>
+
+            <div class="cards-container" id="cards-list">
+                <div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>
+            </div>
+
+            <button class="btn" onclick="openAddCard()">Добавить карту</button>
+        </div>
+
+        <!-- 6. ДОБАВЛЕНИЕ КАРТЫ -->
+        <div id="screen-add-card" class="screen">
+            <div class="header">
+                <h1>Новая карта</h1>
+                <div style="cursor: pointer; font-weight: 800; font-size: 18px;" onclick="switchTab('wallet')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </div>
+            </div>
+
+            <div class="nfc-animation-box">
+                <div class="nfc-pulse">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 0 1 7.54 16.6" stroke-width="2" stroke-linecap="round"/><path d="M12 6a6 6 0 0 1 4.52 9.96" stroke-width="2" stroke-linecap="round"/><path d="M12 10a2 2 0 0 1 1.51 3.32" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <p style="font-size: 14px; color: var(--text-muted); font-weight: 700;">Приложите физическую карту к задней панели телефона</p>
+            </div>
+
+            <div class="input-group">
+                <label>UID карты</label>
+                <input type="text" id="card-uid-input" autocomplete="off" placeholder="Например: 04:A3:8B:2C">
+            </div>
+            <div class="input-group">
+                <label>Nametag</label>
+                <input type="text" id="card-name-input" autocomplete="off" placeholder="Например: Пропуск в офис">
+            </div>
+
+            <button class="btn" onclick="saveNewCard()">Сохранить карту</button>
+        </div>
+
+        <!-- 7. ПРОФИЛЬ И НАСТРОЙКИ -->
+        <div id="screen-profile" class="screen">
+            <div class="header">
+                <h1>Профиль</h1>
+            </div>
+
+            <div class="profile-header-card">
+                <div class="profile-avatar" id="prof-avatar-text">C</div>
+                <div>
+                    <div class="profile-username" id="prof-login">user</div>
+                    <div class="profile-wallet-id" id="prof-wallet-id">ID: 0000 0000 0000</div>
+                </div>
+            </div>
+
+            <div class="profile-section-title">Статистика</div>
+            <div class="profile-stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="prof-cards-count">0</div>
+                    <div class="stat-label">Карт в кошельке</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" style="color: var(--text-main);">Защищено</div>
+                    <div class="stat-label">Статус шифрования</div>
+                </div>
+            </div>
+
+            <div class="profile-section-title">Оформление</div>
+            <div class="theme-grid">
+                <div class="theme-option" onclick="setTheme('luxury')" style="border-color: #e2e8f0; color: #ffffff;">Luxury Black</div>
+                <div class="theme-option" onclick="setTheme('purple')" style="border-color: #c084fc; color: #d8b4fe;">Purple Galaxy</div>
+                <div class="theme-option" onclick="setTheme('orange')" style="border-color: #ff5722; color: #ff8a65;">Orange Force</div>
+                <div class="theme-option" onclick="setTheme('green')" style="border-color: #00e676; color: #69f0ae;">Green Forest</div>
+            </div>
+
+            <div class="profile-section-title">Безопасность и сессия</div>
+            <button class="btn btn-secondary" onclick="startChangePin()">Сменить PIN-код</button>
+            <button class="btn btn-secondary" style="border-color: var(--danger); color: var(--danger); margin-top: 10px;" onclick="logout()">Выйти из аккаунта</button>
+        </div>
+
+        <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
+        <div class="bottom-nav" id="main-bottom-nav" style="display: none;">
+            <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke-width="2"/></svg>
+                <span>Карты</span>
+            </div>
+            <div class="nav-item" id="nav-profile" onclick="switchTab('profile')">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke-width="2"/></svg>
+                <span>Профиль</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ======= КОНФИГУРАЦИЯ FIREBASE =======
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLRUPasEl1_fkGi3ApAryPbw08dSyxPgM",
+            authDomain: "coziswallet.firebaseapp.com",
+            projectId: "coziswallet",
+            storageBucket: "coziswallet.firebasestorage.app",
+            messagingSenderId: "650797575586",
+            appId: "1:650797575586:web:4427cf0e850b39fc7316fb",
+            measurementId: "G-4PY74LBSK2"
+        };
+
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const cardGradients = [
+            'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+            'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+            'linear-gradient(135deg, #dc2626 0%, #ea580c 100%)',
+            'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)',
+            'linear-gradient(135deg, #db2777 0%, #9333ea 100%)',
+            'linear-gradient(135deg, #ca8a04 0%, #65a30d 100%)'
+        ];
+
+        let currentAuthUserDocId = null; 
+        let currentAuthUser = null;      
+
+        let appState = {
+            pin: '',
+            walletId: '',
+            modePin: 'setup',
+            cards: []
+        };
+
+        let generatedRegCode = '';
+
+        async function syncUserDataToCloud() {
+            if (!currentAuthUserDocId) return;
+            try {
+                await db.collection('users').doc(currentAuthUserDocId).update({
+                    cards: appState.cards,
+                    pin: appState.pin,
+                    walletId: appState.walletId
+                });
+            } catch (e) {
+                console.error("Ошибка сохранения в облако:", e);
+            }
+        }
+
+        function finishIntro() {
+            goToScreen('screen-login');
+        }
+
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            const bottomNav = document.getElementById('main-bottom-nav');
+            if (screenId === 'screen-wallet' || screenId === 'screen-profile') {
+                bottomNav.style.display = 'flex';
+            } else {
+                bottomNav.style.display = 'none';
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(tabName === 'wallet') {
+                document.getElementById('nav-wallet').classList.add('active');
+                goToScreen('screen-wallet');
+                updateWalletUI();
+            } else if(tabName === 'profile') {
+                document.getElementById('nav-profile').classList.add('active');
+                openProfile();
+            }
+        }
+
+        function generateWalletId() {
+            const raw = Math.floor(100000000000 + Math.random() * 900000000000).toString();
+            return `${raw.slice(0,4)} ${raw.slice(4,8)} ${raw.slice(8,12)}`;
+        }
+
+        async function handleLogin() {
+            const login = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if(!login || !pass) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            try {
+                const snapshot = await db.collection('users').where('login', '==', login).get();
+                
+                if (snapshot.empty) {
+                    alert('Ошибка: аккаунт не найден.');
+                    return;
+                }
+
+                let userDoc = null;
+                snapshot.forEach(doc => {
+                    userDoc = { id: doc.id, ...doc.data() };
+                });
+
+                if (userDoc.password !== pass) {
+                    alert('Неверный пароль.');
+                    return;
+                }
+
+                currentAuthUserDocId = userDoc.id;
+                currentAuthUser = userDoc;
+                appState.cards = userDoc.cards || [];
+                appState.pin = userDoc.pin || '';
+                appState.walletId = userDoc.walletId || generateWalletId();
+
+                if (!userDoc.walletId) {
+                    syncUserDataToCloud();
+                }
+
+                if(!appState.pin) {
+                    goToScreen('screen-pin-setup');
+                } else {
+                    appState.modePin = 'lock';
+                    resetPinInput();
+                    goToScreen('screen-pin-lock');
+                }
+            } catch (e) {
+                alert('Ошибка соединения с облачной базой данных: ' + e.message);
+            }
+        }
+
+        function requestRegCode() {
+            const login = document.getElementById('reg-user').value.trim();
+            if(!login) {
+                alert('Сначала введите логин!');
+                return;
+            }
+            generatedRegCode = Math.floor(1000 + Math.random() * 9000).toString();
+            showNotification(`Код для ${login}: <b>${generatedRegCode}</b>`);
+        }
+
+        async function handleRegister() {
+            const login = document.getElementById('reg-user').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+            const code = document.getElementById('reg-code').value.trim();
+
+            if(!login || !pass || !code) {
+                alert('Заполните все поля и получите код!');
+                return;
+            }
+
+            if(code !== generatedRegCode) {
+                alert('Неверный код подтверждения!');
+                return;
+            }
+
+            try {
+                const checkSnap = await db.collection('users').where('login', '==', login).get();
+                if (!checkSnap.empty) {
+                    alert('Такой логин уже занят в системе!');
+                    return;
+                }
+
+                const newWalletId = generateWalletId();
+                const newUserRef = await db.collection('users').add({
+                    login: login,
+                    password: pass,
+                    pin: '',
+                    walletId: newWalletId,
+                    cards: []
+                });
+
+                currentAuthUserDocId = newUserRef.id;
+                currentAuthUser = { login, password: pass, cards: [], pin: '', walletId: newWalletId };
+                appState.cards = [];
+                appState.pin = '';
+                appState.walletId = newWalletId;
+
+                showNotification('Аккаунт успешно создан в облаке!');
+                goToScreen('screen-pin-setup');
+            } catch (e) {
+                alert('Ошибка регистрации: ' + e.message);
+            }
+        }
+
+        function showNotification(text) {
+            const banner = document.getElementById('notification-banner');
+            document.getElementById('notif-text').innerHTML = text;
+            banner.classList.add('show');
+            setTimeout(() => { banner.classList.remove('show'); }, 5000);
+        }
+
+        let currentPinInput = '';
+
+        function pressPin(num) {
+            if(num === 'del') {
+                currentPinInput = currentPinInput.slice(0, -1);
+            } else if(currentPinInput.length < 4) {
+                currentPinInput += num;
+            }
+            updatePinDots('setup-dots', currentPinInput.length);
+
+            if(currentPinInput.length === 4) {
+                appState.pin = currentPinInput;
+                syncUserDataToCloud(); 
+                currentPinInput = '';
+                updatePinDots('setup-dots', 0);
+                updateWalletUI();
+                switchTab('wallet');
+            }
+        }
+
+        function pressLockPin(num) {
+            if(num === 'del') {
+                currentPinInput = currentPinInput.slice(0, -1);
+            } else if(currentPinInput.length < 4) {
+                currentPinInput += num;
+            }
+            updatePinDots('lock-dots', currentPinInput.length);
+
+            if(currentPinInput.length === 4) {
+                if(currentPinInput === appState.pin) {
+                    currentPinInput = '';
+                    updatePinDots('lock-dots', 0);
+                    if(appState.modePin === 'change') {
+                        appState.modePin = 'lock';
+                        goToScreen('screen-pin-setup');
+                    } else {
+                        switchTab('wallet');
+                    }
+                } else {
+                    alert('Неверный PIN-код');
+                    currentPinInput = '';
+                    updatePinDots('lock-dots', 0);
+                }
+            }
+        }
+
+        function updatePinDots(containerId, count) {
+            const dots = document.getElementById(containerId).children;
+            for(let i=0; i<dots.length; i++) {
+                if(i < count) dots[i].classList.add('filled');
+                else dots[i].classList.remove('filled');
+            }
+        }
+
+        function startChangePin() {
+            appState.modePin = 'change';
+            resetPinInput();
+            goToScreen('screen-pin-setup');
+        }
+
+        function resetPinInput() {
+            currentPinInput = '';
+            updatePinDots('setup-dots', 0);
+            updatePinDots('lock-dots', 0);
+        }
+
+        function setTheme(themeName) {
+            document.body.className = 'theme-' + themeName;
+            showNotification(`Тема изменена на ${themeName.toUpperCase()}`);
+        }
+
+        function openAddCard() {
+            document.getElementById('card-uid-input').value = '';
+            document.getElementById('card-name-input').value = '';
+            goToScreen('screen-add-card');
+        }
+
+        async function saveNewCard() {
+            const uid = document.getElementById('card-uid-input').value.trim();
+            const nametag = document.getElementById('card-name-input').value.trim();
+
+            if(!uid || !nametag) {
+                alert('Заполните UID и nametag');
+                return;
+            }
+
+            const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
+            const newCard = { uid, nametag, gradient: gradientColor };
+            
+            appState.cards.push(newCard);
+            await syncUserDataToCloud(); 
+
+            updateWalletUI();
+            switchTab('wallet');
+        }
+
+        function openCardModal(uid, nametag, gradient) {
+            document.getElementById('modal-card-nametag').innerText = nametag;
+            document.getElementById('modal-card-uid').innerText = uid;
+            document.getElementById('modal-wallet-card-bg').style.background = gradient;
+            
+            document.getElementById('card-modal-overlay').classList.add('active');
+        }
+
+        function closeCardModal() {
+            document.getElementById('card-modal-overlay').classList.remove('active');
+        }
+
+        function updateWalletUI() {
+            const container = document.getElementById('cards-list');
+            if(appState.cards.length === 0) {
+                container.innerHTML = `<div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>`;
+            } else {
+                container.innerHTML = '';
+                appState.cards.forEach((card, index) => {
+                    const cardBg = card.gradient || cardGradients[index % cardGradients.length];
+                    const safeNametag = card.nametag.replace(/'/g, "\\'");
+                    const safeUid = card.uid.replace(/'/g, "\\'");
+                    const safeGradient = cardBg.replace(/'/g, "\\'");
+
+                    container.innerHTML += `
+                        <div class="wallet-card" style="background: ${cardBg};" onclick="openCardModal('${safeUid}', '${safeNametag}', '${safeGradient}')">
+                            <div class="card-top">
+                                <div class="card-nametag">${card.nametag}</div>
+                                <div class="card-chip"></div>
+                            </div>
+                            <div class="card-bottom">
+                                <div class="card-uid">${card.uid}</div>
+                                <div class="card-brand">CozisSecure</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function openProfile() {
+            const username = currentAuthUser ? currentAuthUser.login : 'admin';
+            document.getElementById('prof-login').innerText = username;
+            document.getElementById('prof-avatar-text').innerText = username.charAt(0).toUpperCase();
+            document.getElementById('prof-wallet-id').innerText = `ID: ${appState.walletId}`;
+            document.getElementById('prof-cards-count').innerText = appState.cards.length;
+            goToScreen('screen-profile');
+        }
+
+        function logout() {
+            appState.cards = [];
+            currentAuthUser = null;
+            currentAuthUserDocId = null;
+            currentPinInput = '';
+            goToScreen('screen-login');
+        }
+    </script>
+</body>
+</html>
