@@ -919,6 +919,17 @@
     </div>
 
     <script>
+        // ======= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ БЕЗОПАСНОСТИ =======
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // ======= PWA ОБРАБОТЧИК УСТАНОВКИ =======
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -942,15 +953,15 @@
 
         // ======= КОНФИГУРАЦИЯ FIREBASE =======
         const firebaseConfig = {
-    apiKey: "AIzaSyA2SA4DjiYfxk_n-10xg5o8-MFJwTv_QFM",
-    authDomain: "cozisnfc.firebaseapp.com",
-    databaseURL: "https://cozisnfc-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cozisnfc",
-    storageBucket: "cozisnfc.firebasestorage.app",
-    messagingSenderId: "724371737201",
-    appId: "1:724371737201:web:96078dedb1e25094e6a9d0",
-    measurementId: "G-NLK7RHJ2WK"
-};
+            apiKey: "AIzaSyA2SA4DjiYfxk_n-10xg5o8-MFJwTv_QFM",
+            authDomain: "cozisnfc.firebaseapp.com",
+            databaseURL: "https://cozisnfc-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cozisnfc",
+            storageBucket: "cozisnfc.firebasestorage.app",
+            messagingSenderId: "724371737201",
+            appId: "1:724371737201:web:96078dedb1e25094e6a9d0",
+            measurementId: "G-NLK7RHJ2WK"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1116,7 +1127,7 @@
                 return;
             }
             generatedRegCode = Math.floor(1000 + Math.random() * 9000).toString();
-            showNotification(`Код для ${login}: <b>${generatedRegCode}</b>`);
+            showNotification(`Код для <b>${escapeHtml(login)}</b>: <b>${escapeHtml(generatedRegCode)}</b>`, true);
         }
 
         async function handleRegister() {
@@ -1163,9 +1174,14 @@
             }
         }
 
-        function showNotification(text) {
+        function showNotification(htmlContent, isHtml = false) {
             const banner = document.getElementById('notification-banner');
-            document.getElementById('notif-text').innerHTML = text;
+            const descElem = document.getElementById('notif-text');
+            if (isHtml) {
+                descElem.innerHTML = htmlContent;
+            } else {
+                descElem.textContent = htmlContent;
+            }
             banner.classList.add('show');
             setTimeout(() => { banner.classList.remove('show'); }, 5000);
         }
@@ -1267,7 +1283,6 @@
             }
 
             try {
-                // Проверяем наличие карты в коллекции cards (созданной через CozisNFC)
                 const cardRef = db.collection('cards').doc(uid);
                 const cardDoc = await cardRef.get();
 
@@ -1304,7 +1319,6 @@
 
             const uids = appState.cards.map(c => c.uid);
 
-            // Подписываемся на коллекцию 'cards' для получения актуальных points и visits
             cardsListener = db.collection('cards')
                 .where(firebase.firestore.FieldPath.documentId(), 'in', uids)
                 .onSnapshot(snapshot => {
@@ -1331,10 +1345,10 @@
         }
 
         function openCardModal(uid, nametag, gradient, points, visits) {
-            document.getElementById('modal-card-nametag').innerText = nametag;
-            document.getElementById('modal-card-uid').innerText = uid;
-            document.getElementById('modal-card-points').innerText = points;
-            document.getElementById('modal-card-visits').innerText = visits;
+            document.getElementById('modal-card-nametag').textContent = nametag;
+            document.getElementById('modal-card-uid').textContent = uid;
+            document.getElementById('modal-card-points').textContent = points;
+            document.getElementById('modal-card-visits').textContent = visits;
             document.getElementById('modal-wallet-card-bg').style.background = gradient;
             
             document.getElementById('card-modal-overlay').classList.add('active');
@@ -1352,44 +1366,56 @@
                 container.innerHTML = '';
                 cardsList.forEach((card, index) => {
                     const cardBg = card.gradient || cardGradients[index % cardGradients.length];
-                    const safeNametag = (card.nametag || 'Карта').replace(/'/g, "\\'");
-                    const safeUid = card.uid.replace(/'/g, "\\'");
-                    const safeGradient = cardBg.replace(/'/g, "\\'");
                     const points = card.points || 0;
                     const visits = card.visits || 0;
+                    const nametag = card.nametag || 'Карта';
+                    const uid = card.uid || '';
 
-                    container.innerHTML += `
-                        <div class="wallet-card" style="background: ${cardBg};" onclick="openCardModal('${safeUid}', '${safeNametag}', '${safeGradient}', ${points}, ${visits})">
-                            <div class="card-top">
-                                <div class="card-nametag">${card.nametag}</div>
-                                <div class="card-chip"></div>
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'wallet-card';
+                    cardEl.style.background = cardBg;
+                    cardEl.innerHTML = `
+                        <div class="card-top">
+                            <div class="card-nametag"></div>
+                            <div class="card-chip"></div>
+                        </div>
+                        <div class="card-stats">
+                            <div class="card-stat-item">
+                                <div class="card-stat-label">Баллы</div>
+                                <div class="card-stat-value"></div>
                             </div>
-                            <div class="card-stats">
-                                <div class="card-stat-item">
-                                    <div class="card-stat-label">Баллы</div>
-                                    <div class="card-stat-value">${points}</div>
-                                </div>
-                                <div class="card-stat-item">
-                                    <div class="card-stat-label">Визиты</div>
-                                    <div class="card-stat-value">${visits}</div>
-                                </div>
-                            </div>
-                            <div class="card-bottom">
-                                <div class="card-uid">${card.uid}</div>
-                                <div class="card-brand">CozisSecure</div>
+                            <div class="card-stat-item">
+                                <div class="card-stat-label">Визиты</div>
+                                <div class="card-stat-value"></div>
                             </div>
                         </div>
+                        <div class="card-bottom">
+                            <div class="card-uid"></div>
+                            <div class="card-brand">CozisSecure</div>
+                        </div>
                     `;
+
+                    // Безопасное назначение текста через textContent для исключения XSS
+                    cardEl.querySelector('.card-nametag').textContent = nametag;
+                    cardEl.querySelector('.card-stats').children[0].querySelector('.card-stat-value').textContent = points;
+                    cardEl.querySelector('.card-stats').children[1].querySelector('.card-stat-value').textContent = visits;
+                    cardEl.querySelector('.card-uid').textContent = uid;
+
+                    cardEl.addEventListener('click', () => {
+                        openCardModal(uid, nametag, cardBg, points, visits);
+                    });
+
+                    container.appendChild(cardEl);
                 });
             }
         }
 
         function openProfile() {
             const username = currentAuthUser ? currentAuthUser.login : 'admin';
-            document.getElementById('prof-login').innerText = username;
-            document.getElementById('prof-avatar-text').innerText = username.charAt(0).toUpperCase();
-            document.getElementById('prof-wallet-id').innerText = `ID: ${appState.walletId}`;
-            document.getElementById('prof-cards-count').innerText = appState.cards.length;
+            document.getElementById('prof-login').textContent = username;
+            document.getElementById('prof-avatar-text').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('prof-wallet-id').textContent = `ID: ${appState.walletId}`;
+            document.getElementById('prof-cards-count').textContent = appState.cards.length;
             goToScreen('screen-profile');
         }
 
