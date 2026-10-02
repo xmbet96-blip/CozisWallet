@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CozisWallet">
     
-    <!-- SVG-Иконка приложения (Без букв) -->
+    <!-- SVG-Иконка приложения -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
 
@@ -41,7 +41,7 @@
         document.head.appendChild(link);
     </script>
 
-    <!-- Подключение единого фирменного шрифта Syne -->
+    <!-- Подключение шрифта Syne -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
     <!-- Подключаем Firebase SDK -->
@@ -1294,7 +1294,6 @@
             }
 
             try {
-                // Пробуем найти карту по обоим вариантам написания UID в базе (с двоеточиями и без)
                 let cardRef = db.collection('cards').doc(uid);
                 let cardDoc = await cardRef.get();
 
@@ -1308,7 +1307,7 @@
                     return;
                 }
 
-                const finalDocId = cardDoc.id; // Реальный UID, под которым карта хранится в базе
+                const finalDocId = cardDoc.id; 
                 const cardData = cardDoc.data();
                 const nametag = customNametag || cardData.nametag || 'Карта лояльности';
                 const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
@@ -1446,4 +1445,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
