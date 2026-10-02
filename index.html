@@ -922,10 +922,8 @@
         // ======= ФУНКЦИЯ НОРМАЛИЗАЦИИ UID =======
         function normalizeUid(input) {
             if (!input) return '';
-            // Оставляем только шестнадцатеричные символы и переводим в нижний регистр
             const clean = input.toString().replace(/[^0-9a-fA-F]/g, '').toLowerCase();
             if (clean.length === 0) return '';
-            // Разбиваем по 2 символа и соединяем двоеточиями
             const pairs = clean.match(/.{1,2}/g);
             return pairs ? pairs.join(':') : '';
         }
@@ -1020,7 +1018,7 @@
 
                 ndef.addEventListener("reading", ({ serialNumber }) => {
                     if (serialNumber) {
-                        const formattedUid = normalizeUid(serialNumber); // Нормализация считанного UID
+                        const formattedUid = normalizeUid(serialNumber);
                         document.getElementById('card-uid-input').value = formattedUid;
                         statusText.innerText = `UID подставлен: ${formattedUid}`;
                         statusText.style.color = '#00e676';
@@ -1280,8 +1278,9 @@
 
         // ======= ПРИВЯЗКА КАРТЫ ИЗ ОБЩЕЙ БАЗЫ ОРГАНИЗАЦИИ =======
         async function saveNewCard() {
-            const rawInput = document.getElementById('card-uid-input').value;
-            const uid = normalizeUid(rawInput); // Нормализация ручного ввода или сканирования
+            const rawInput = document.getElementById('card-uid-input').value.trim();
+            const uid = normalizeUid(rawInput);
+            const rawClean = rawInput.replace(/[^0-9a-fA-F]/g, '').toLowerCase();
             const customNametag = document.getElementById('card-name-input').value.trim();
 
             if(!uid) {
@@ -1289,25 +1288,32 @@
                 return;
             }
 
-            if(appState.cards.some(c => c.uid === uid)) {
+            if(appState.cards.some(c => c.uid === uid || c.uid === rawClean)) {
                 alert('Эта карта уже добавлена в ваш кошелек!');
                 return;
             }
 
             try {
-                const cardRef = db.collection('cards').doc(uid);
-                const cardDoc = await cardRef.get();
+                // Пробуем найти карту по обоим вариантам написания UID в базе (с двоеточиями и без)
+                let cardRef = db.collection('cards').doc(uid);
+                let cardDoc = await cardRef.get();
+
+                if(!cardDoc.exists && rawClean) {
+                    cardRef = db.collection('cards').doc(rawClean);
+                    cardDoc = await cardRef.get();
+                }
 
                 if(!cardDoc.exists) {
                     alert('Карта с таким UID не найдена в базе данных организации. Обратитесь в организацию для выпуска карты.');
                     return;
                 }
 
+                const finalDocId = cardDoc.id; // Реальный UID, под которым карта хранится в базе
                 const cardData = cardDoc.data();
                 const nametag = customNametag || cardData.nametag || 'Карта лояльности';
                 const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
 
-                const newCardObj = { uid, nametag, gradient: gradientColor };
+                const newCardObj = { uid: finalDocId, nametag, gradient: gradientColor };
                 appState.cards.push(newCardObj);
 
                 await syncUserDataToCloud();
@@ -1407,7 +1413,6 @@
                         </div>
                     `;
 
-                    // Безопасное назначение текста через textContent для исключения XSS
                     cardEl.querySelector('.card-nametag').textContent = nametag;
                     cardEl.querySelector('.card-stats').children[0].querySelector('.card-stat-value').textContent = points;
                     cardEl.querySelector('.card-stats').children[1].querySelector('.card-stat-value').textContent = visits;
