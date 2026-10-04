@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CozisWallet">
     
-    <!-- SVG-Иконка приложения -->
+    <!-- SVG-Иконка приложения (Без букв) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none'><rect width='512' height='512' rx='128' fill='%23110c24'/><path d='M140 180C140 157.909 157.909 140 180 140H332C354.091 140 372 157.909 372 180V332C372 354.091 354.091 372 332 372H180C157.909 372 140 354.091 140 332V180Z' fill='url(%23paint0_linear)' stroke='%23c084fc' stroke-width='8'/><circle cx='256' cy='256' r='48' fill='%23c084fc'/><path d='M256 120A136 136 0 0 1 392 256' stroke='%23c084fc' stroke-width='24' stroke-linecap='round'/><path d='M256 160A96 96 0 0 1 352 256' stroke='%23a855f7' stroke-width='20' stroke-linecap='round'/><defs><linearGradient id='paint0_linear' x1='140' y1='140' x2='372' y2='372' gradientUnits='userSpaceOnUse'><stop stop-color='%231d143c'/><stop offset='1' stop-color='%2305030a'/></linearGradient></defs></svg>">
 
@@ -41,7 +41,7 @@
         document.head.appendChild(link);
     </script>
 
-    <!-- Подключение шрифта Syne -->
+    <!-- Подключение единого фирменного шрифта Syne -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
     <!-- Подключаем Firebase SDK -->
@@ -663,6 +663,134 @@
             color: #0b0f19;
             margin-bottom: 12px;
         }
+/* ===== ТЕМАТИЧЕСКИЕ КАРТЫ ===== */
+.wallet-card {
+    background: var(--card-bg, linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)) !important;
+    border: 1px solid var(--card-border, rgba(255,255,255,0.25)) !important;
+    color: var(--card-text, #ffffff) !important;
+    position: relative;
+}
+
+.wallet-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 15% 15%, rgba(255,255,255,0.18), transparent 55%);
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+.wallet-card:hover::after { opacity: 1; }
+
+/* Декоративная золотая рамка для Luxury */
+body.theme-luxury .wallet-card {
+    --card-bg: linear-gradient(135deg, #0d0d0f 0%, #050507 100%);
+    --card-border: rgba(212, 175, 55, 0.75);
+    --card-text: #e8c86a;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(212,175,55,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+body.theme-luxury .wallet-card::before {
+    background: rgba(212, 175, 55, 0.08);
+}
+body.theme-luxury .card-chip {
+    background: linear-gradient(135deg, #f5d67b 0%, #b8860b 100%) !important;
+    border: 1px solid rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4), inset 0 1px 2px rgba(255,255,255,0.5) !important;
+}
+body.theme-luxury .card-stat-item {
+    background: rgba(212, 175, 55, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+}
+body.theme-luxury .card-nametag {
+    color: #e8c86a !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 12px rgba(212,175,55,0.3) !important;
+}
+body.theme-luxury .card-stat-label,
+body.theme-luxury .card-stat-value,
+body.theme-luxury .card-brand {
+    color: #d4af37 !important;
+}
+body.theme-luxury .card-chip::after {
+    border-color: rgba(0,0,0,0.4) !important;
+}
+body.theme-luxury .wallet-card .card-serial {
+    color: rgba(212, 175, 55, 0.55);
+}
+
+/* Оранжевая тема */
+body.theme-orange .wallet-card {
+    --card-bg: linear-gradient(135deg, #2a0f05 0%, #100402 100%);
+    --card-border: rgba(255, 87, 34, 0.6);
+    --card-text: #ffe0b2;
+}
+body.theme-orange .card-chip {
+    background: linear-gradient(135deg, #ffcc80 0%, #e65100 100%) !important;
+}
+
+/* Зелёная тема */
+body.theme-green .wallet-card {
+    --card-bg: linear-gradient(135deg, #06251a 0%, #02110a 100%);
+    --card-border: rgba(0, 230, 118, 0.55);
+    --card-text: #b9f6ca;
+}
+body.theme-green .card-chip {
+    background: linear-gradient(135deg, #b9f6ca 0%, #00c853 100%) !important;
+}
+
+/* Фиолетовая (по умолчанию) */
+body.theme-purple .wallet-card {
+    --card-bg: linear-gradient(135deg, #2e1065 0%, #0b0f19 100%);
+    --card-border: rgba(192, 132, 252, 0.5);
+    --card-text: #f3e8ff;
+}
+
+/* Скрытие UID на главном экране — теперь UID показывается только в модалке */
+.wallet-card .card-uid { display: none !important; }
+
+.card-serial {
+    font-size: 9px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-top: 4px;
+}
+
+.card-network {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    text-transform: uppercase;
+}
+
+.card-network::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+}
+
+/* Тонкая золотая линия в Luxury */
+body.theme-luxury .wallet-card .card-gold-line {
+    display: block;
+}
+.card-gold-line {
+    display: none;
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 62%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    opacity: 0.6;
+}
     </style>
 </head>
 <body class="theme-purple">
@@ -922,10 +1050,12 @@
         // ======= ФУНКЦИЯ НОРМАЛИЗАЦИИ UID =======
         function normalizeUid(input) {
             if (!input) return '';
-            const clean = input.toString().replace(/[^0-9a-fA-F]/g, '').toLowerCase();
+            // Оставляем только шестнадцатеричные символы и переводим в ВЕРХНИЙ регистр
+            const clean = input.toString().replace(/[^0-9a-fA-F]/g, '').toUpperCase();
             if (clean.length === 0) return '';
+            // Разбиваем по 2 символа и соединяем подчеркиваниями (как в вашей базе)
             const pairs = clean.match(/.{1,2}/g);
-            return pairs ? pairs.join(':') : '';
+            return pairs ? pairs.join('_') : '';
         }
 
         // ======= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ БЕЗОПАСНОСТИ =======
@@ -1018,7 +1148,7 @@
 
                 ndef.addEventListener("reading", ({ serialNumber }) => {
                     if (serialNumber) {
-                        const formattedUid = normalizeUid(serialNumber);
+                        const formattedUid = normalizeUid(serialNumber); // Нормализация считанного UID
                         document.getElementById('card-uid-input').value = formattedUid;
                         statusText.innerText = `UID подставлен: ${formattedUid}`;
                         statusText.style.color = '#00e676';
@@ -1278,9 +1408,8 @@
 
         // ======= ПРИВЯЗКА КАРТЫ ИЗ ОБЩЕЙ БАЗЫ ОРГАНИЗАЦИИ =======
         async function saveNewCard() {
-            const rawInput = document.getElementById('card-uid-input').value.trim();
-            const uid = normalizeUid(rawInput);
-            const rawClean = rawInput.replace(/[^0-9a-fA-F]/g, '').toLowerCase();
+            const rawInput = document.getElementById('card-uid-input').value;
+            const uid = normalizeUid(rawInput); // Нормализация ручного ввода или сканирования
             const customNametag = document.getElementById('card-name-input').value.trim();
 
             if(!uid) {
@@ -1288,31 +1417,25 @@
                 return;
             }
 
-            if(appState.cards.some(c => c.uid === uid || c.uid === rawClean)) {
+            if(appState.cards.some(c => c.uid === uid)) {
                 alert('Эта карта уже добавлена в ваш кошелек!');
                 return;
             }
 
             try {
-                let cardRef = db.collection('cards').doc(uid);
-                let cardDoc = await cardRef.get();
-
-                if(!cardDoc.exists && rawClean) {
-                    cardRef = db.collection('cards').doc(rawClean);
-                    cardDoc = await cardRef.get();
-                }
+                const cardRef = db.collection('cards').doc(uid);
+                const cardDoc = await cardRef.get();
 
                 if(!cardDoc.exists) {
                     alert('Карта с таким UID не найдена в базе данных организации. Обратитесь в организацию для выпуска карты.');
                     return;
                 }
 
-                const finalDocId = cardDoc.id; 
                 const cardData = cardDoc.data();
                 const nametag = customNametag || cardData.nametag || 'Карта лояльности';
                 const gradientColor = cardGradients[appState.cards.length % cardGradients.length];
 
-                const newCardObj = { uid: finalDocId, nametag, gradient: gradientColor };
+                const newCardObj = { uid, nametag, gradient: gradientColor };
                 appState.cards.push(newCardObj);
 
                 await syncUserDataToCloud();
@@ -1376,55 +1499,73 @@
         }
 
         function updateWalletUI(cardsList = appState.cards) {
-            const container = document.getElementById('cards-list');
-            if(cardsList.length === 0) {
-                container.innerHTML = `<div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>`;
-            } else {
-                container.innerHTML = '';
-                cardsList.forEach((card, index) => {
-                    const cardBg = card.gradient || cardGradients[index % cardGradients.length];
-                    const points = card.points || 0;
-                    const visits = card.visits || 0;
-                    const nametag = card.nametag || 'Карта';
-                    const uid = card.uid || '';
+    const container = document.getElementById('cards-list');
+    if(cardsList.length === 0) {
+        container.innerHTML = `<div class="empty-cards">У вас пока нет добавленных карт.<br>Нажмите кнопку ниже, чтобы добавить первую.</div>`;
+        return;
+    }
 
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'wallet-card';
-                    cardEl.style.background = cardBg;
-                    cardEl.innerHTML = `
-                        <div class="card-top">
-                            <div class="card-nametag"></div>
-                            <div class="card-chip"></div>
-                        </div>
-                        <div class="card-stats">
-                            <div class="card-stat-item">
-                                <div class="card-stat-label">Баллы</div>
-                                <div class="card-stat-value"></div>
-                            </div>
-                            <div class="card-stat-item">
-                                <div class="card-stat-label">Визиты</div>
-                                <div class="card-stat-value"></div>
-                            </div>
-                        </div>
-                        <div class="card-bottom">
-                            <div class="card-uid"></div>
-                            <div class="card-brand">CozisSecure</div>
-                        </div>
-                    `;
+    container.innerHTML = '';
+    cardsList.forEach((card, index) => {
+        const cardBg = card.gradient || cardGradients[index % cardGradients.length];
+        const points = card.points || 0;
+        const visits = card.visits || 0;
+        const nametag = card.nametag || 'Карта';
+        const uid = card.uid || '';
 
-                    cardEl.querySelector('.card-nametag').textContent = nametag;
-                    cardEl.querySelector('.card-stats').children[0].querySelector('.card-stat-value').textContent = points;
-                    cardEl.querySelector('.card-stats').children[1].querySelector('.card-stat-value').textContent = visits;
-                    cardEl.querySelector('.card-uid').textContent = uid;
+        // Серийный номер генерируется от UID (детерминированно)
+        const serialBase = (uid || '0000000000').replace(/[^0-9A-Z]/gi, '');
+        const serial = 'CN-' + (serialBase.slice(-6).toUpperCase() || '000000');
 
-                    cardEl.addEventListener('click', () => {
-                        openCardModal(uid, nametag, cardBg, points, visits);
-                    });
-
-                    container.appendChild(cardEl);
-                });
-            }
+        const cardEl = document.createElement('div');
+        cardEl.className = 'wallet-card';
+        // gradient применяется как background, но тема его перекроет через --card-bg
+        if (!document.body.classList.contains('theme-luxury') &&
+            !document.body.classList.contains('theme-orange') &&
+            !document.body.classList.contains('theme-green') &&
+            !document.body.classList.contains('theme-purple')) {
+            cardEl.style.background = cardBg;
+        } else {
+            cardEl.style.background = cardBg; // fallback, тема выше всё равно перекроет
         }
+
+        cardEl.innerHTML = `
+            <div class="card-gold-line"></div>
+            <div class="card-top">
+                <div>
+                    <div class="card-nametag"></div>
+                    <div class="card-serial"></div>
+                </div>
+                <div class="card-chip"></div>
+            </div>
+            <div class="card-stats">
+                <div class="card-stat-item">
+                    <div class="card-stat-label">Баллы</div>
+                    <div class="card-stat-value"></div>
+                </div>
+                <div class="card-stat-item">
+                    <div class="card-stat-label">Визиты</div>
+                    <div class="card-stat-value"></div>
+                </div>
+            </div>
+            <div class="card-bottom">
+                <div class="card-network">cozis secure</div>
+                <div class="card-brand">CozisSecure</div>
+            </div>
+        `;
+
+        cardEl.querySelector('.card-nametag').textContent = nametag;
+        cardEl.querySelector('.card-serial').textContent = serial;
+        cardEl.querySelector('.card-stats').children[0].querySelector('.card-stat-value').textContent = points;
+        cardEl.querySelector('.card-stats').children[1].querySelector('.card-stat-value').textContent = visits;
+
+        cardEl.addEventListener('click', () => {
+            openCardModal(uid, nametag, cardBg, points, visits);
+        });
+
+        container.appendChild(cardEl);
+    });
+}
 
         function openProfile() {
             const username = currentAuthUser ? currentAuthUser.login : 'admin';
@@ -1445,4 +1586,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
